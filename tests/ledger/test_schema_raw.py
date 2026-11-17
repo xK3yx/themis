@@ -24,6 +24,9 @@ def test_valid_rows_accepted(raw):
 def test_kind_must_be_known(raw):
     with pytest.raises(Err):
         raw.node("opinion", {"asserted_by": "reasoner"})
+    # With no provenance keys the V3 trigger has nothing to object to; the CHECK must.
+    with pytest.raises(Err, match="CHECK"):
+        raw.node("opinion", {})
 
 
 def test_provenance_keys_match_kind(raw):
@@ -144,6 +147,11 @@ def test_run_seeds_distinct(raw):
         raw.run(seeds=(1, 1, 2))
 
 
+def test_run_needs_a_seed(raw):
+    with pytest.raises(Err, match="V10"):
+        raw.run(seeds=())
+
+
 def test_run_seeds_integers(raw):
     with pytest.raises(Err, match="V10"):
         raw.run(seeds=(1, 2, "3"))
@@ -203,9 +211,7 @@ def populated(raw, conn):
     a, b = raw.prior(), raw.cited()
     d = raw.derived([a, b])
     raw.node("measured", {"run": raw.run(), "metric": "acc"})
-    conn.execute(
-        "INSERT INTO observations VALUES (?,?,?,?)", (d, hx("p"), '{"role":"test"}', NOW)
-    )
+    conn.execute("INSERT INTO observations VALUES (?,?,?,?)", (d, hx("p"), '{"role":"test"}', NOW))
     return conn
 
 
@@ -232,7 +238,7 @@ def test_insert_or_replace_rejected(populated, table):
     ]
     row = populated.execute(f"SELECT {','.join(cols)} FROM {table} LIMIT 1").fetchone()
     qs = ",".join("?" * len(cols))
-    with pytest.raises(Err):
+    with pytest.raises(Err, match="V18"):
         populated.execute(f"INSERT OR REPLACE INTO {table}({','.join(cols)}) VALUES ({qs})", row)
     assert populated.execute(f"SELECT * FROM {table} LIMIT 1").fetchone() == before
 
@@ -282,6 +288,41 @@ def test_cannot_derive_from_node_being_superseded(raw):
         raw.node("derived", {"parents": [a, b], "rule": "fix", "supersedes": a})
 
 
+# ---------------------------------------------------------------- defence in depth
+# These constraints sit behind the nodes_validate trigger. Each test drops that trigger on
+# the live connection to prove the constraint holds on its own.
+
+
+@pytest.fixture
+def without_validation(conn):
+    conn.execute("DROP TRIGGER nodes_validate")
+    return conn
+
+
+def test_kind_check_alone(raw, without_validation):
+    with pytest.raises(Err, match="CHECK"):
+        raw.node("opinion", {"asserted_by": "x"})
+
+
+def test_cited_source_check_alone(raw, without_validation):
+    src = raw.source()
+    with pytest.raises(Err, match="CHECK"):
+        raw.node("cited", {"source": src, "locator": raw.span()}, source_id=None)
+
+
+def test_measured_run_check_alone(raw, without_validation):
+    r = raw.run()
+    with pytest.raises(Err, match="CHECK"):
+        raw.node("measured", {"run": r, "metric": "acc"}, run_id=None)
+
+
+def test_one_successor_index_alone(raw, without_validation):
+    a = raw.prior()
+    raw.supersede(a)
+    with pytest.raises(Err, match="UNIQUE"):
+        raw.node("prior", {"asserted_by": "critic", "supersedes": a})
+
+
 # ---------------------------------------------------------------- Invariant 3: id format
 
 
@@ -293,10 +334,12 @@ def test_id_format_check(raw, bad):
 
 @pytest.mark.parametrize("table", ["blobs", "sources", "runs", "nodes"])
 def test_primary_key_not_null(conn, table):
-    # SQLite allows NULL in non-integer primary keys unless NOT NULL is explicit,
-    # and CHECK constraints pass when they evaluate to NULL.
+    # CHECK constraints pass when they evaluate to NULL, so a NULL id would slip past the
+    # hex CHECK. STRICT tables make PK columns NOT NULL; the schema also says so explicitly.
     notnull = {
-        r[1]: r[3] for r in conn.execute(f"PRAGMA table_info('{table}')") if r[5]  # pk cols
+        r[1]: r[3]
+        for r in conn.execute(f"PRAGMA table_info('{table}')")
+        if r[5]  # pk cols
     }
     assert notnull and all(notnull.values())
 
