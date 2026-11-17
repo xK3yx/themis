@@ -74,9 +74,7 @@ def test_wrong_user_version_refuses_open(db_path):
 
 def test_tx_rolls_back_on_error(conn):
     with pytest.raises(RuntimeError), tx(conn):
-        conn.execute(
-            "INSERT INTO blobs VALUES (?,?,?,?)", ("a" * 64, 1, "text/plain", "t")
-        )
+        conn.execute("INSERT INTO blobs VALUES (?,?,?,?)", ("a" * 64, 1, "text/plain", "t"))
         raise RuntimeError("boom")
     assert conn.execute("SELECT count(*) FROM blobs").fetchone()[0] == 0
 
