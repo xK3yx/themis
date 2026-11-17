@@ -1,0 +1,25 @@
+# secrets
+.env
+
+# python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# themis data
+data/
+*.db
+
+# models
+*.safetensors
+*.gguf
+*.ckpt
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
