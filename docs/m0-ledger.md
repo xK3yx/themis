@@ -1,6 +1,6 @@
 # M0: Ledger, validity rules, blob store
 
-Status: **approved 2026-11-18** (with the decisions in §9). Implementation in progress.
+Status: **done 2026-11-18**. Approved with the decisions in §9; notes from implementation in §10.
 
 ## 1. Goal and "done when"
 
@@ -194,7 +194,7 @@ failure traces back to this table.
 | V12 | derived has ≥ 2 parents, no duplicates | check | trigger over `json_each` |
 | V13 | every parent exists | check | trigger |
 | V14 | no parent is superseded at insert time | check | trigger against `edges` |
-| V15 | `supersedes` target exists and is not already superseded | check | trigger + `one_successor` index |
+| V15 | `supersedes` target exists, is not already superseded, and is not one of the node's own parents | check | trigger + `one_successor` index |
 | V16 | no UPDATE on any ledger table | no mutator methods | `BEFORE UPDATE` → abort, all 6 tables |
 | V17 | no DELETE on any ledger table | no mutator methods | `BEFORE DELETE` → abort, all 6 tables |
 | V18 | no overwrite via `INSERT OR REPLACE` | DAO checks existence first | `BEFORE INSERT` aborts if the PK already exists (+ `recursive_triggers=ON`) |
@@ -349,3 +349,23 @@ Runtime: `pydantic>=2`. Dev: `pytest`, `ruff`. Everything else is standard libra
 5. Two-character blob sharding.
 6. `prior` nodes stored, never admissible; allowed as derived parents.
 7. SQLite ≥ 3.38 required, checked on open.
+
+## 10. Implementation notes
+
+- **CHECKs that evaluate to NULL pass.** `json_type(x, '$.role') = 'text'` accepts a
+  missing `role`, so type checks use `IS 'text'` / `IS NOT 'text'`. Every primary key is
+  declared `NOT NULL` explicitly (STRICT tables imply it, but the hex CHECK alone would not).
+- **V15 extended:** a node may not list the node it supersedes among its own parents.
+  Otherwise a correction would depend on what it corrects and be inadmissible from the
+  moment it is written.
+- **V18 means raw duplicate inserts abort**, so `INSERT ... ON CONFLICT DO NOTHING` can't be
+  used. The DAO looks rows up first. Re-adding an existing node skips validation, so
+  re-ingesting a derivation whose parent has since been superseded still returns its id.
+- **DAO-only rules:** V7 (span bytes) and V11 (per-seed metric) need blob contents, which
+  aren't in the DB. `test_db_is_the_backstop` shows that the DB-side rules still fire
+  with DAO validation disabled.
+- **Mutation check:** each `RAISE`, each trigger, and the key CHECKs/index in
+  `schema.sql` were disabled one at a time; the suite fails for all 68 mutants. Constraints
+  that sit behind a trigger have their own tests that drop the trigger first.
+- Tests import shared builders from `tests/ledger/helpers.py` and raw-SQL fixtures from
+  `tests/ledger/conftest.py`.

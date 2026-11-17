@@ -104,7 +104,7 @@ data/           ledger DB and blob store (gitignored)
 
 | | Scope | Done when | Status |
 |---|---|---|---|
-| M0 | Repo setup, ledger schema, validity rules, blob store | Invalid nodes rejected by tests | todo |
+| M0 | Repo setup, ledger schema, validity rules, blob store | Invalid nodes rejected by tests | done |
 | M1 | Router, ingest, LaTeX table parsing, claim extraction | >= 80% field accuracy on 5 hand-labelled papers | todo |
 | M2 | Entity resolution, conflict detection, evidence pooling | Finds known conflicts in LoRA literature | todo |
 | M3 | Experiment harness, replicate 2-3 published results | Measurements within reported ranges | todo |
