@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api//WjyMiEqtkwc7l3zlA1pfavNwiQ</id>
+  <title>arXiv Query: search_query=ti:"low-rank adaptation" AND cat:cs.CL&amp;id_list=&amp;start=0&amp;max_results=5</title>
+  <updated>2026-11-18T04:20:30Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:%22low-rank+adaptation%22+AND+cat:cs.CL&amp;start=0&amp;max_results=5&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>5</opensearch:itemsPerPage>
+  <opensearch:totalResults>150</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2106.09685v2</id>
+    <title>LoRA: Low-Rank Adaptation of Large Language Models</title>
+    <updated>2021-10-16T18:40:34Z</updated>
+    <link href="https://arxiv.org/abs/2106.09685v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2106.09685v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>An important paradigm of natural language processing consists of large-scale pre-training on general domain data and adaptation to particular tasks or domains. As we pre-train larger models, full fine-tuning, which retrains all model parameters, becomes less feasible. Using GPT-3 175B as an example -- deploying independent instances of fine-tuned models, each with 175B parameters, is prohibitively expensive. We propose Low-Rank Adaptation, or LoRA, which freezes the pre-trained model weights and injects trainable rank decomposition matrices into each layer of the Transformer architecture, greatly reducing the number of trainable parameters for downstream tasks. Compared to GPT-3 175B fine-tuned with Adam, LoRA can reduce the number of trainable parameters by 10,000 times and the GPU memory requirement by 3 times. LoRA performs on-par or better than fine-tuning in model quality on RoBERTa, DeBERTa, GPT-2, and GPT-3, despite having fewer trainable parameters, a higher training throughput, and, unlike adapters, no additional inference latency. We also provide an empirical investigation into rank-deficiency in language model adaptation, which sheds light on the efficacy of LoRA. We release a package that facilitates the integration of LoRA with PyTorch models and provide our implementations and model checkpoints for RoBERTa, DeBERTa, and GPT-2 at https://github.com/microsoft/LoRA.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-06-17T17:37:18Z</published>
+    <arxiv:comment>Draft V2 includes better baselines, experiments on GLUE, and more on adapter latency</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Edward J. Hu</name>
+    </author>
+    <author>
+      <name>Yelong Shen</name>
+    </author>
+    <author>
+      <name>Phillip Wallis</name>
+    </author>
+    <author>
+      <name>Zeyuan Allen-Zhu</name>
+    </author>
+    <author>
+      <name>Yuanzhi Li</name>
+    </author>
+    <author>
+      <name>Shean Wang</name>
+    </author>
+    <author>
+      <name>Lu Wang</name>
+    </author>
+    <author>
+      <name>Weizhu Chen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2210.07558v2</id>
+    <title>DyLoRA: Parameter Efficient Tuning of Pre-trained Models using Dynamic Search-Free Low-Rank Adaptation</title>
+    <updated>2023-04-19T04:28:24Z</updated>
+    <link href="https://arxiv.org/abs/2210.07558v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2210.07558v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>With the ever-growing size of pretrained models (PMs), fine-tuning them has become more expensive and resource-hungry. As a remedy, low-rank adapters (LoRA) keep the main pretrained weights of the model frozen and just introduce some learnable truncated SVD modules (so-called LoRA blocks) to the model. While LoRA blocks are parameter-efficient, they suffer from two major problems: first, the size of these blocks is fixed and cannot be modified after training (for example, if we need to change the rank of LoRA blocks, then we need to re-train them from scratch); second, optimizing their rank requires an exhaustive search and effort. In this work, we introduce a dynamic low-rank adaptation (DyLoRA) technique to address these two problems together. Our DyLoRA method trains LoRA blocks for a range of ranks instead of a single rank by sorting the representation learned by the adapter module at different ranks during training. We evaluate our solution on different natural language understanding (GLUE benchmark) and language generation tasks (E2E, DART and WebNLG) using different pretrained models such as RoBERTa and GPT with different sizes. Our results show that we can train dynamic search-free models with DyLoRA at least 4 to 7 times (depending to the task) faster than LoRA without significantly compromising performance. Moreover, our models can perform consistently well on a much larger range of ranks compared to LoRA.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-10-14T06:29:22Z</published>
+    <arxiv:comment>Accepted to EACL 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Mojtaba Valipour</name>
+    </author>
+    <author>
+      <name>Mehdi Rezagholizadeh</name>
+    </author>
+    <author>
+      <name>Ivan Kobyzev</name>
+    </author>
+    <author>
+      <name>Ali Ghodsi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.06404v1</id>
+    <title>LACoS-BLOOM: Low-rank Adaptation with Contrastive objective on 8 bits Siamese-BLOOM</title>
+    <updated>2023-05-10T18:26:42Z</updated>
+    <link href="https://arxiv.org/abs/2305.06404v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.06404v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Text embeddings are useful features for several NLP applications, such as sentence similarity, text clustering, and semantic search. In this paper, we present a Low-rank Adaptation with a Contrastive objective on top of 8-bit Siamese-BLOOM, a multilingual large language model optimized to produce semantically meaningful word embeddings. The innovation is threefold. First, we cast BLOOM weights to 8-bit values. Second, we fine-tune BLOOM with a scalable adapter (LoRA) and 8-bit Adam optimizer for sentence similarity classification. Third, we apply a Siamese architecture on BLOOM model with a contrastive objective to ease the multi-lingual labeled data scarcity. The experiment results show the quality of learned embeddings from LACoS-BLOOM is proportional to the number of model parameters and the amount of unlabeled training data. With the parameter efficient fine-tuning design, we are able to run BLOOM 7.1 billion parameters end-to-end on a single GPU machine with 32GB memory. Compared to previous solution Sentence-BERT, we achieve significant improvement on both English and multi-lingual STS tasks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-10T18:26:42Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Wen-Yu Hua</name>
+    </author>
+    <author>
+      <name>Brian Williams</name>
+    </author>
+    <author>
+      <name>Davood Shamsi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.15011v2</id>
+    <title>Bactrian-X: Multilingual Replicable Instruction-Following Models with Low-Rank Adaptation</title>
+    <updated>2023-10-10T07:46:44Z</updated>
+    <link href="https://arxiv.org/abs/2305.15011v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.15011v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Instruction tuning has shown great promise in improving the performance of large language models. However, research on multilingual instruction tuning has been limited due to the scarcity of high-quality instruction-response datasets across different languages. To bridge this gap, we present Bactrian-X, a comprehensive multilingual parallel dataset of 3.4 million instruction-response pairs across 52 languages. Leveraging this dataset, we train a set of adapters using low-rank adaptation (LoRA), which are lightweight components that seamlessly integrate with large language models. These adapters have a substantially lower parameter count than the base model, making them easily replaceable and usable as plug-ins for different languages or language groups. Extensive experiments in various multilingual evaluation settings demonstrate that models derived from LoRA-based training over Bactrian-X outperform both the vanilla models and existing instruction-tuned models. The code and models are publicly available at https://github.com/mbzuai-nlp/bactrian-x</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-24T10:50:31Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Haonan Li</name>
+    </author>
+    <author>
+      <name>Fajri Koto</name>
+    </author>
+    <author>
+      <name>Minghao Wu</name>
+    </author>
+    <author>
+      <name>Alham Fikri Aji</name>
+    </author>
+    <author>
+      <name>Timothy Baldwin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2306.05617v1</id>
+    <title>Low-rank Adaptation Method for Wav2vec2-based Fake Audio Detection</title>
+    <updated>2023-06-09T01:43:41Z</updated>
+    <link href="https://arxiv.org/abs/2306.05617v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2306.05617v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Self-supervised speech models are a rapidly developing research topic in fake audio detection. Many pre-trained models can serve as feature extractors, learning richer and higher-level speech features. However,when fine-tuning pre-trained models, there is often a challenge of excessively long training times and high memory consumption, and complete fine-tuning is also very expensive. To alleviate this problem, we apply low-rank adaptation(LoRA) to the wav2vec2 model, freezing the pre-trained model weights and injecting a trainable rank-decomposition matrix into each layer of the transformer architecture, greatly reducing the number of trainable parameters for downstream tasks. Compared with fine-tuning with Adam on the wav2vec2 model containing 317M training parameters, LoRA achieved similar performance by reducing the number of trainable parameters by 198 times.</summary>
+    <category term="cs.SD" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-06-09T01:43:41Z</published>
+    <arxiv:comment>6pages</arxiv:comment>
+    <arxiv:primary_category term="cs.SD"/>
+    <arxiv:journal_ref>IJCAI 2023 Workshop on Deepfake Audio Detection and Analysis</arxiv:journal_ref>
+    <author>
+      <name>Chenglong Wang</name>
+    </author>
+    <author>
+      <name>Jiangyan Yi</name>
+    </author>
+    <author>
+      <name>Xiaohui Zhang</name>
+    </author>
+    <author>
+      <name>Jianhua Tao</name>
+    </author>
+    <author>
+      <name>Le Xu</name>
+    </author>
+    <author>
+      <name>Ruibo Fu</name>
+    </author>
+  </entry>
+</feed>
