@@ -642,6 +642,58 @@ def _emphasis(cell: Cell) -> None:
         cell.style["underline"] = True
 
 
+def _colspec_columns(spec: str) -> list[str]:
+    """The >{...} declaration in front of each column of a column spec ('' if none).
+    Handles | separators, @{..} / !{..} / <{..}, p{w}-style arguments, and *{n}{...}."""
+    cols: list[str] = []
+    i, pending = 0, ""
+    while i < len(spec):
+        ch = spec[i]
+        if ch in " \t\r\n|":
+            i += 1
+        elif ch in "@!<":
+            i = _group(spec, _skip_ws(spec, i + 1))
+        elif ch == ">":
+            j = _skip_ws(spec, i + 1)
+            g = _group(spec, j)
+            pending, i = spec[j + 1 : g - 1], g
+        elif ch == "*":
+            j = _skip_ws(spec, i + 1)
+            g1 = _group(spec, j)
+            g2 = _group(spec, _skip_ws(spec, g1))
+            try:
+                n = int(spec[j + 1 : g1 - 1])
+            except ValueError:
+                n = 0
+            cols += _colspec_columns(spec[_skip_ws(spec, g1) + 1 : g2 - 1]) * n
+            i = g2
+        elif ch.isalpha():
+            cols.append(pending)
+            pending = ""
+            i += 1
+            j = _skip_ws(spec, i)
+            if j < len(spec) and spec[j] == "{":
+                i = _group(spec, j)
+        else:
+            i += 1
+    return cols
+
+
+@handler("C6")
+def _column_styles(pt: ParsedTable) -> None:
+    """>{\\bfseries} / >{\\itshape} in the column spec style every single-column cell of that
+    column (a \\multicolumn brings its own spec)."""
+    decls = _colspec_columns(pt.colspec)
+    for cell in pt.cells:
+        if cell.colspan != 1 or cell.col >= len(decls) or not cell.raw:
+            continue
+        d = decls[cell.col]
+        if re.search(r"\\(?:bfseries|bf)(?![A-Za-z])", d):
+            cell.style["bold"] = True
+        if re.search(r"\\(?:itshape|it|em)(?![A-Za-z])", d):
+            cell.style["italic"] = True
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
