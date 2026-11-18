@@ -1,0 +1,17 @@
+{
+ "archive_sha256": "11f9bb5ff1e8137413f95d66a9d6078638298b761528b3b1504466635398dbbe",
+ "arxiv_id": "2402.10193",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "peft_results": {
+   "slice": [
+    42950,
+    43952
+   ],
+   "source_path": "neurips_2024.tex",
+   "source_sha256": "54be9a8e8e5e12f0c47815852be555e1355c528a7f28cfe4d305461db1f2419e"
+  }
+ },
+ "version": "v3"
+}

@@ -1,0 +1,25 @@
+{
+ "fixture": "peft_results.tex",
+ "cases": ["C5", "C10", "C11", "C13", "C14"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{@{}lccccccccccc@{}}",
+   "n_rows": 4, "n_cols": 10,
+   "rules": [[-1, "toprule"], [0, "midrule"], [3, "bottomrule"]],
+   "caption_prefix": "We train a $r=16$ LoRA finetune",
+   "label": "peft-results-app",
+   "rows": [
+    ["Model/Method", "ARC", "BBH", "HellaSwag", "TruthfulQA", "LAMBADA", "WinoGrande", "GSM8K",
+     {"raw": "\\textbf{Average $\\uparrow$}", "style": {"bold": true, "arrow": "up"}}, "MT-Bench"],
+    [{"raw": "\\textit{Llama 2-7B}", "style": {"italic": true}},
+     ["52.56", 52.56], ["33.76", 33.76], ["78.96", 78.96], ["38.96", 38.96], ["68.39", 68.39],
+     ["68.98", 68.98], ["13.57", 13.57], ["50.74", 50.74], {"raw": "--", "missing": "dash"}],
+    [{"raw": "\\textit{Llama 2-7B UltraChat}", "style": {"italic": true}},
+     ["54.52", 54.52], ["34.14", 34.14], ["78.99", 78.99], ["46.84", 46.84], ["70.83", 70.83],
+     ["69.53", 69.53], ["14.71", 14.71], ["52.79", 52.79], ["4.93", 4.93]],
+    ["BitDelta", ["54.61", 54.61], ["34.28", 34.28], ["79.10", 79.1], ["46.60", 46.6], ["70.58", 70.58],
+     ["69.30", 69.3], ["15.16", 15.16], ["52.80", 52.8], ["4.87", 4.87]]
+   ]
+  }
+ ]
+}

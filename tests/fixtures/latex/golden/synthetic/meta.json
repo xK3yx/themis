@@ -1,0 +1,6 @@
+{
+ "synthetic": true,
+ "license": "synthetic",
+ "note": "Written for Themis. Covers only cases C3, C6 and C19, which no table in 35 surveyed CC-licensed papers contained (docs/m1-ingest-extract.md §12, decision 11).",
+ "surveyed_papers": 35
+}

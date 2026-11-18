@@ -1,0 +1,17 @@
+{
+ "archive_sha256": "c48548ff0c45f68e9594c82c802c421116a7f2180a3a262c027d1ef0c349826c",
+ "arxiv_id": "2404.02948",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "quant_methods": {
+   "slice": [
+    844,
+    1937
+   ],
+   "source_path": "appendix/nf4_int8_gptq.tex",
+   "source_sha256": "f9016fb7af2806ccc28786d899d2565d335169d5b4b6971fda1d6b77a6d226a6"
+  }
+ },
+ "version": "v4"
+}

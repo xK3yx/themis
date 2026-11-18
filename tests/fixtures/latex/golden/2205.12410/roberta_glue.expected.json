@@ -1,0 +1,47 @@
+{
+ "fixture": "roberta_glue.tex",
+ "cases": ["C5", "C12", "C13", "C14", "C15", "C17"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{lr c cccccc  c c}",
+   "n_rows": 9, "n_cols": 11,
+   "rules": [[-1, "toprule"], [1, "midrule"], [2, "midrule"], [8, "bottomrule"]],
+   "caption_prefix": "Results for NLU tasks on GLUE development set with \\textbf{RoBERTa-large}",
+   "label": "tab:roberta_glue_dev",
+   "rows": [
+    [{"raw": "\\bf Model", "style": {"bold": true}}, "\\#Param.", "MNLI", "QNLI", "SST2", "QQP", "MRPC",
+     "CoLA", "RTE", "STS-B", {"raw": "\\bf Avg.", "style": {"bold": true}}],
+    ["", "", "Acc", "Acc", "Acc", "Acc", "Acc", "Mcc", "Acc", "Pearson", {"raw": "", "pad": true}],
+    [{"raw": "Full Fine-tuning$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "355.0M",
+     ["90.2", 90.2], ["94.7", 94.7], ["96.4", 96.4], ["92.2", 92.2], ["90.9", 90.9], ["68.0", 68.0],
+     ["86.6", 86.6], {"raw": "\\textbf{92.4}", "num": 92.4, "lit": "92.4", "style": {"bold": true}},
+     ["88.9", 88.9]],
+    [{"raw": "Pfeiffer Adapter$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "3.0M",
+     ["90.2", 90.2], ["94.8", 94.8], ["96.1", 96.1], ["91.9", 91.9], ["90.2", 90.2], ["68.3", 68.3],
+     ["83.8", 83.8], ["92.1", 92.1], ["88.4", 88.4]],
+    [{"raw": "Pfeiffer Adapter$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "0.8M",
+     ["90.5", 90.5], ["94.8", 94.8], ["96.6", 96.6], ["91.7", 91.7], ["89.7", 89.7], ["67.8", 67.8],
+     ["80.1", 80.1], ["91.9", 91.9], ["87.9", 87.9]],
+    [{"raw": "Houlsby Adapter$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "6.0M",
+     ["89.9", 89.9], ["94.7", 94.7], ["96.2", 96.2], ["92.1", 92.1], ["88.7", 88.7], ["66.5", 66.5],
+     ["83.4", 83.4], ["91.0", 91.0], ["87.8", 87.8]],
+    [{"raw": "Houlsby Adapter$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "0.8M",
+     ["90.3", 90.3], ["94.7", 94.7], ["96.3", 96.3], ["91.5", 91.5], ["87.7", 87.7], ["66.3", 66.3],
+     ["72.9", 72.9], ["91.5", 91.5], ["86.4", 86.4]],
+    [{"raw": "LoRA$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "0.8M",
+     ["90.6", 90.6], ["94.8", 94.8], ["96.2", 96.2], ["91.6", 91.6], ["90.2", 90.2], ["68.2", 68.2],
+     ["85.2", 85.2], ["92.3", 92.3], ["88.6", 88.6]],
+    [{"raw": "{\\sysname} Adapter", "text": "AdaMix Adapter"}, "0.8M",
+     {"raw": "\\textbf{90.9}", "num": 90.9, "lit": "90.9", "style": {"bold": true}},
+     {"raw": "\\textbf{95.4}", "num": 95.4, "lit": "95.4", "style": {"bold": true}},
+     {"raw": "\\textbf{97.1}", "num": 97.1, "lit": "97.1", "style": {"bold": true}},
+     {"raw": "\\textbf{92.3}", "num": 92.3, "lit": "92.3", "style": {"bold": true}},
+     {"raw": "\\textbf{91.9}", "num": 91.9, "lit": "91.9", "style": {"bold": true}},
+     {"raw": "\\textbf{70.2}", "num": 70.2, "lit": "70.2", "style": {"bold": true}},
+     {"raw": "\\textbf{89.2}", "num": 89.2, "lit": "89.2", "style": {"bold": true}},
+     {"raw": "\\textbf{92.4}", "num": 92.4, "lit": "92.4", "style": {"bold": true}},
+     {"raw": "\\textbf{89.9}", "num": 89.9, "lit": "89.9", "style": {"bold": true}}]
+   ]
+  }
+ ]
+}

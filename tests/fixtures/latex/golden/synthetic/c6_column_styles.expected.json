@@ -1,0 +1,19 @@
+{
+ "fixture": "c6_column_styles.tex",
+ "cases": ["C6"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{l>{\\bfseries}c>{\\itshape}c}",
+   "n_rows": 3, "n_cols": 3,
+   "rules": [[-1, "toprule"], [0, "midrule"], [2, "bottomrule"]],
+   "caption_prefix": "SYNTHETIC: column-wide styles",
+   "label": "tab:synthetic-c6",
+   "rows": [
+    ["Method", {"raw": "Best", "style": {"bold": true}}, {"raw": "Note", "style": {"italic": true}}],
+    ["LoRA", {"raw": "71.2", "num": 71.2, "style": {"bold": true}}, {"raw": "tuned", "style": {"italic": true}}],
+    ["Adapter", {"raw": "70.4", "num": 70.4, "style": {"bold": true}},
+     {"raw": "default", "style": {"italic": true}}]
+   ]
+  }
+ ]
+}

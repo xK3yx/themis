@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2026-11-18T05:15:55Z</responseDate>
+                <request verb="GetRecord" identifier="oai:arXiv.org:2305.15011" metadataPrefix="arXiv">http://oaipmh.arxiv.org/oai</request>
+
+
+    <GetRecord>
+                <record>
+                <header>
+        <identifier>oai:arXiv.org:2305.15011</identifier>
+        <datestamp>2023-10-11</datestamp>
+            <setSpec>cs:cs:CL</setSpec>
+    </header>
+
+            <metadata>
+                        <arXiv xmlns="http://arxiv.org/OAI/arXiv/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://arxiv.org/OAI/arXiv/ https://oaipmh.arxiv.org/OAI/arXiv.xsd">
+        <id>2305.15011</id>
+        <created>2023-10-10</created>
+            <updated>2023-10-11</updated>
+        <authors>
+                <author>
+                    <keyname>Li</keyname>
+                        <forenames>Haonan</forenames>
+                </author>
+                <author>
+                    <keyname>Koto</keyname>
+                        <forenames>Fajri</forenames>
+                </author>
+                <author>
+                    <keyname>Wu</keyname>
+                        <forenames>Minghao</forenames>
+                </author>
+                <author>
+                    <keyname>Aji</keyname>
+                        <forenames>Alham Fikri</forenames>
+                </author>
+                <author>
+                    <keyname>Baldwin</keyname>
+                        <forenames>Timothy</forenames>
+                </author>
+        </authors>
+        <title>Bactrian-X: Multilingual Replicable Instruction-Following Models with Low-Rank Adaptation</title>
+            <categories>cs.CL</categories>
+            <license>http://creativecommons.org/licenses/by/4.0/</license>
+            <abstract>Instruction tuning has shown great promise in improving the performance of large language models. However, research on multilingual instruction tuning has been limited due to the scarcity of high-quality instruction-response datasets across different languages. To bridge this gap, we present Bactrian-X, a comprehensive multilingual parallel dataset of 3.4 million instruction-response pairs across 52 languages. Leveraging this dataset, we train a set of adapters using low-rank adaptation (LoRA), which are lightweight components that seamlessly integrate with large language models. These adapters have a substantially lower parameter count than the base model, making them easily replaceable and usable as plug-ins for different languages or language groups. Extensive experiments in various multilingual evaluation settings demonstrate that models derived from LoRA-based training over Bactrian-X outperform both the vanilla models and existing instruction-tuned models. The code and models are publicly available at https://github.com/mbzuai-nlp/bactrian-x</abstract>
+    </arXiv>
+
+            </metadata>
+        </record>
+
+    </GetRecord>
+</OAI-PMH>

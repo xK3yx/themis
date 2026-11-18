@@ -1,0 +1,19 @@
+{
+ "fixture": "c3_nested_spans.tex",
+ "cases": ["C3"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{lccc}",
+   "n_rows": 4, "n_cols": 4,
+   "rules": [[-1, "toprule"], [1, "midrule"], [3, "bottomrule"]],
+   "caption_prefix": "SYNTHETIC: nested multirow and multicolumn spans",
+   "label": "tab:synthetic-c3",
+   "rows": [
+    [{"raw": "Setting", "cs": 2, "rs": 2}, {"raw": "Accuracy", "cs": 2}],
+    [{"raw": "", "cs": 2}, "Dev", "Test"],
+    [{"raw": "LoRA", "rs": 2}, "$r=8$", ["71.2", 71.2], ["70.4", 70.4]],
+    ["", "$r=16$", ["72.0", 72.0], ["71.1", 71.1]]
+   ]
+  }
+ ]
+}

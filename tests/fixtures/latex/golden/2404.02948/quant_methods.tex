@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+\centering
+\caption{Quantization Error and Accuracy for PiSSA Combined with Various Quantization Methods. GPTQ quantizes each row $w$ independently, adjusting one weight at a time while updating all remaining, non-quantized weights. Therefore, the nuclear norm method used for calculating quantization error in the main paper is not applicable to GPTQ. Instead, we measure Perplexity on WikiText-2, where a lower Perplexity indicates reduced quantization error.}
+\small
+\begin{tabular}{c|c|cc|cc}
+\toprule
+\multirow{2}{*}{Model}&\multirow{2}{*}{Dataset}
+& \multicolumn{2}{c|}{Quantization Error} & \multicolumn{2}{c}{GSM8K Accuracy} \\
+\cline{3-6}
+&& QLoRA   & PiSSA   & QLoRA  & PiSSA\\
+\midrule
+&NF4	& 324.8 (nuclear norm)	& \textbf{265.8} (nuclear norm)	& 70.79±0.42	& \textbf{73.76±0.20}\\
+LLaMA-3-8B&INT8 & 34.47 (nuclear norm)	& \textbf{28.21} (nuclear norm)	& 71.68±0.14	& \textbf{76.54±0.32}\\
+&GPTQ	& 20.79 (perplexity)	& \textbf{6.23} (perplexity)	& 70.18±0.42	& \textbf{74.58±0.22}\\
+\bottomrule
+\end{tabular}
+\label{table: apdix-nf4_int8_gptq}
+\end{table}

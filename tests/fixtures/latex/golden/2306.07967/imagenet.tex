@@ -1,0 +1,20 @@
+\begin{table}[h]
+\centering
+    \caption{\textbf{Results on domain generalization}. GLoRA is significantly better than the existing works.}
+    \label{tab:dg}
+    \resizebox{0.65\textwidth}{!}{
+    \begin{tabular}{l ccccc}
+    \toprule
+    & \textbf{Source} & \multicolumn{4}{c}{\textbf{Target}} \\ \cmidrule(lr){2-2} \cmidrule(lr){3-6}
+    & ImageNet & -Sketch & -V2 & -A & -R \\
+    \midrule
+    Adapter \cite{houlsby2019parameter} &70.5 & 16.4 & 59.1 & 5.5 & 22.1 \\
+    VPT \cite{jia2022visual} & 70.5 & 18.3 & 58.0 &  4.6 & 23.2 \\
+    LoRA \cite{hu2021lora} & 70.8 & 20.0 & 59.3 &  6.9 & 23.3 \\
+    NOAH \cite{zhang2022neural} & 71.5 & 24.8 & 66.1 &  11.9 & 28.5  \\
+  \rowcolor{lightgray}  GLoRA (0.29M) & 78.3 & 30.6 & 67.5 &  13.3 & 31.0 \\
+    \bottomrule
+    \end{tabular}
+    }
+    \vspace{-0.15in}
+\end{table}

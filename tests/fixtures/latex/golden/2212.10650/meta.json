@@ -1,0 +1,25 @@
+{
+ "archive_sha256": "a6fdb7e05301af351c60016306259fdcdcabfb44b9651bf6a9640cbde9d977af",
+ "arxiv_id": "2212.10650",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "ft_hparams": {
+   "slice": [
+    38396,
+    38837
+   ],
+   "source_path": "KronA.tex",
+   "source_sha256": "3276e3c33acd37f413c1b8c251cb4285a76cff3bbad3464f3424ed67236a5cb3"
+  },
+  "shapes": {
+   "slice": [
+    25641,
+    26544
+   ],
+   "source_path": "KronA.tex",
+   "source_sha256": "3276e3c33acd37f413c1b8c251cb4285a76cff3bbad3464f3424ed67236a5cb3"
+  }
+ },
+ "version": "v1"
+}

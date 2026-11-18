@@ -1,0 +1,22 @@
+{
+ "fixture": "shapes.tex",
+ "cases": ["C2", "C13", "C14"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{c|cccccc}",
+   "n_rows": 5, "n_cols": 7,
+   "rules": [[-1, "toprule"], [0, "midrule"], [2, "midrule"], [4, "bottomrule"]],
+   "caption_prefix": "This table compares some details of Kronecker factors",
+   "label": "tab:replacement-shapes",
+   "rows": [
+    ["Module Name", "Factor Name", "Symbol", "Shape", "Parameters", "Module Parameters", "Constraint"],
+    [{"raw": "KronA", "rs": 2}, "Kronecker Factor", "$\\mathbf{A}_k$", "$a_1 \\times a_2$", "$a_1a_2$",
+     {"raw": "$a_1a_2+b_1b_2$", "rs": 2}, {"raw": "$a_1b_1=a_2b_2=d_h$", "rs": 2}],
+    ["", "Kronecker Factor", "$\\mathbf{B}_k$", "$b_1 \\times b_2$", "$b_1b_2$", "", ""],
+    [{"raw": "LoRA", "rs": 2}, "Down Projection", "$\\mathbf{A}$", "$d_h \\times r$", "$d_hr$",
+     {"raw": "$2d_hr$", "rs": 2}, {"raw": "$r<\\frac{d_h}{2}$", "rs": 2}],
+    ["", "Up Projection", "$\\mathbf{B}$", "$r \\times d_h$", "$d_hr$", ""]
+   ]
+  }
+ ]
+}

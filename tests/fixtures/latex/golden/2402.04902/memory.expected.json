@@ -1,0 +1,26 @@
+{
+ "fixture": "memory.tex",
+ "cases": ["C7", "C10", "C13", "C14"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{L{1.5cm}P{1.5cm}P{1.3cm}P{1.3cm}P{1.3cm}}",
+   "n_rows": 6, "n_cols": 5,
+   "rules": [[-1, "toprule"], [1, "midrule"], [2, "midrule"], [5, "bottomrule"]],
+   "caption_prefix": "Memory cost (GB) for fine-tuning LLMs",
+   "label": "table:memory",
+   "rows": [
+    [{"raw": "", "style": {"color": "Gray"}},
+     {"raw": "\\small OpenLLaMA", "style": {"color": "Gray"}},
+     {"raw": "\\small LLaMA", "cs": 3, "style": {"color": "Gray"}}],
+    [{"raw": "Methods", "style": {"color": "Gray"}}, {"raw": "3B", "style": {"color": "Gray"}},
+     {"raw": "7B", "style": {"color": "Gray"}}, {"raw": "13B", "style": {"color": "Gray"}},
+     {"raw": "33B", "style": {"color": "Gray"}}],
+    ["\\small LoRA", ["15.1", 15.1], ["25.1", 25.1], ["43.8", 43.8], ["71.9", 71.9]],
+    ["\\small QAT", ["44.2", 44.2], ["79.5", 79.5], {"raw": "OOM", "missing": "oom"},
+     {"raw": "OOM", "missing": "oom"}],
+    ["\\small QAT-LoRA", ["22.6", 22.6], ["41.9", 41.9], ["70.6", 70.6], {"raw": "OOM", "missing": "oom"}],
+    ["\\small L4Q", ["15.3", 15.3], ["25.4", 25.4], ["44.3", 44.3], ["73.2", 73.2]]
+   ]
+  }
+ ]
+}

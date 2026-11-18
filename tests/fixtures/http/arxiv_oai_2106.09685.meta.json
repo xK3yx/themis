@@ -1,0 +1,12 @@
+{
+  "url": "https://export.arxiv.org/oai2",
+  "params": {
+    "verb": "GetRecord",
+    "identifier": "oai:arXiv.org:2106.09685",
+    "metadataPrefix": "arXiv"
+  },
+  "final_url": "https://oaipmh.arxiv.org/oai?verb=GetRecord&identifier=oai%3AarXiv.org%3A2106.09685&metadataPrefix=arXiv",
+  "status": 200,
+  "content_type": "text/xml",
+  "recorded_at": "2026-11-18T04:20:36+00:00"
+}

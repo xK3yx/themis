@@ -1,0 +1,13 @@
+\begin{table}[t]
+\caption{Average performances (low-compute, low-epoch regime: 100 random models, 3 tuning epochs) on the GLUE datasets using the T5-base pretrained backbone model. We compare adding different parameter allocation constraints to the $\mathcal{S}_1$ design space.} \label{Tab:Allocate}
+\begin{center}
+\small
+\begin{tabular}{c|cccccccc|c}
+\toprule
+\textbf{Param Allocation} & \textbf{SST-2}                          & \textbf{MNLI}                           & \textbf{QNLI}       & \textbf{QQP}        & \textbf{RTE}        & \textbf{STS-B}      & \textbf{MRPC}       & \textbf{CoLA} & \textbf{Avg}        \\ \midrule \midrule
+Increasing   & 87.2                           & \textbf{ 77.9 }                     & 79.4 & 78.7        & 71.6   & 77.6         & \textbf{ 81.4 } & 32.0  &73.2 \\
+\textbf{Uniform}        & \textbf{87.8} & 77.4  & \textbf{ 80.1 } & \textbf{ 80.5 } & \textbf{ 73.9 } & \textbf{78.1} & 80.4  & 34.3  & \textbf{74.0}      \\
+Decreasing       & 86.4                           & 75.8                             & 78.4          & 77.0           & 70.4           & 77.1         & 78.7       & \textbf{ 35.8 } &72.4 \\ \bottomrule
+\end{tabular} 
+\end{center}
+\end{table}

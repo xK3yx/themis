@@ -84,6 +84,68 @@ class Raw:
         )
         return nid
 
+    # M1 tables
+    def llm_call(self, role: str = "extractor") -> str:
+        key = hx(self._label("call"))
+        req, resp = self.blob(), self.blob()
+        self.conn.execute(
+            "INSERT INTO llm_calls(key, role, provider, model, request_blob, response_blob,"
+            " prompt_template, output_schema_version, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+            (key, role, "fake", "fake-model", req, resp, "label_table@abc", 1, NOW),
+        )
+        return key
+
+    def http_fetch(self, url: str = "https://export.arxiv.org/api/query?q=lora") -> str:
+        key = hx(self._label("fetch"))
+        self.conn.execute(
+            "INSERT INTO http_fetches(key, method, url, status, response_blob, content_type,"
+            " fetched_at) VALUES (?,?,?,?,?,?,?)",
+            (key, "GET", url, 200, self.blob(), "application/atom+xml", NOW),
+        )
+        return key
+
+    def paper_record(
+        self, arxiv_id=_UNSET, doi=None, openalex_id=None, title: str = "A paper"
+    ) -> str:
+        if arxiv_id is _UNSET:
+            arxiv_id = "2106.09685"
+        rid = hx(self._label("record"))
+        self.conn.execute(
+            "INSERT INTO paper_records(id, fetch_key, source_api, arxiv_id, doi, openalex_id,"
+            " title, first_author, year, record_json, created_at)"
+            " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (
+                rid,
+                self.http_fetch(),
+                "arxiv",
+                arxiv_id,
+                doi,
+                openalex_id,
+                title,
+                "Hu",
+                2021,
+                "{}",
+                NOW,
+            ),
+        )
+        return rid
+
+    def paper_link(self, a: str, b: str, kind: str = "possible_duplicate", ordered=True):
+        if ordered:
+            a, b = sorted([a, b])
+        self.conn.execute(
+            "INSERT INTO paper_links(a, b, kind, reason, created_at) VALUES (?,?,?,?,?)",
+            (a, b, kind, "same normalised title", NOW),
+        )
+
+    def stage_record(self, key=None, status="done", attempt=1, version="1", stage="parse"):
+        key = key or self._label("item")
+        self.conn.execute(
+            "INSERT INTO stage_records(stage, input_key, version, attempt, status, output_ref,"
+            " detail_json, created_at) VALUES (?,?,?,?,?,?,?,?)",
+            (stage, key, version, attempt, status, None, "{}", NOW),
+        )
+
     # Convenience constructors for valid nodes.
     def span(self, start=0, end=5, text="hello") -> dict:
         return {"type": "span", "start": start, "end": end, "text": text}

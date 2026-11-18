@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2026-11-18T05:11:07Z</responseDate>
+                <request verb="GetRecord" identifier="oai:arXiv.org:2205.12410" metadataPrefix="arXiv">http://oaipmh.arxiv.org/oai</request>
+
+
+    <GetRecord>
+                <record>
+                <header>
+        <identifier>oai:arXiv.org:2205.12410</identifier>
+        <datestamp>2022-11-07</datestamp>
+            <setSpec>cs:cs:CL</setSpec>
+            <setSpec>cs:cs:AI</setSpec>
+            <setSpec>cs:cs:LG</setSpec>
+    </header>
+
+            <metadata>
+                        <arXiv xmlns="http://arxiv.org/OAI/arXiv/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://arxiv.org/OAI/arXiv/ https://oaipmh.arxiv.org/OAI/arXiv.xsd">
+        <id>2205.12410</id>
+        <created>2022-11-02</created>
+            <updated>2022-11-07</updated>
+        <authors>
+                <author>
+                    <keyname>Wang</keyname>
+                        <forenames>Yaqing</forenames>
+                </author>
+                <author>
+                    <keyname>Agarwal</keyname>
+                        <forenames>Sahaj</forenames>
+                </author>
+                <author>
+                    <keyname>Mukherjee</keyname>
+                        <forenames>Subhabrata</forenames>
+                </author>
+                <author>
+                    <keyname>Liu</keyname>
+                        <forenames>Xiaodong</forenames>
+                </author>
+                <author>
+                    <keyname>Gao</keyname>
+                        <forenames>Jing</forenames>
+                </author>
+                <author>
+                    <keyname>Awadallah</keyname>
+                        <forenames>Ahmed Hassan</forenames>
+                </author>
+                <author>
+                    <keyname>Gao</keyname>
+                        <forenames>Jianfeng</forenames>
+                </author>
+        </authors>
+        <title>AdaMix: Mixture-of-Adaptations for Parameter-efficient Model Tuning</title>
+            <categories>cs.CL cs.AI cs.LG</categories>
+            <comments>Accepted by EMNLP 2022</comments>
+            <license>http://creativecommons.org/licenses/by/4.0/</license>
+            <abstract>Standard fine-tuning of large pre-trained language models (PLMs) for downstream tasks requires updating hundreds of millions to billions of parameters, and storing a large copy of the PLM weights for every task resulting in increased cost for storing, sharing and serving the models. To address this, parameter-efficient fine-tuning (PEFT) techniques were introduced where small trainable components are injected in the PLM and updated during fine-tuning. We propose AdaMix as a general PEFT method that tunes a mixture of adaptation modules -- given the underlying PEFT method of choice -- introduced in each Transformer layer while keeping most of the PLM weights frozen. For instance, AdaMix can leverage a mixture of adapters like Houlsby or a mixture of low rank decomposition matrices like LoRA to improve downstream task performance over the corresponding PEFT methods for fully supervised and few-shot NLU and NLG tasks. Further, we design AdaMix such that it matches the same computational cost and the number of tunable parameters as the underlying PEFT method. By only tuning 0.1-0.2% of PLM parameters, we show that AdaMix outperforms SOTA parameter-efficient fine-tuning and full model fine-tuning for both NLU and NLG tasks.</abstract>
+    </arXiv>
+
+            </metadata>
+        </record>
+
+    </GetRecord>
+</OAI-PMH>

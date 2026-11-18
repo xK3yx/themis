@@ -1,0 +1,4 @@
+# Fixtures are byte-exact evidence: byte offsets and sha256 hashes depend on every byte,
+# so git must never convert their line endings (core.autocrlf would on Windows).
+tests/fixtures/** -text
+*.sqlite3 binary

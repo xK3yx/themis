@@ -1,0 +1,14 @@
+{
+  "url": "https://export.arxiv.org/api/query",
+  "params": {
+    "search_query": "ti:\"low-rank adaptation\" AND cat:cs.CL",
+    "start": "0",
+    "max_results": "5",
+    "sortBy": "submittedDate",
+    "sortOrder": "ascending"
+  },
+  "final_url": "https://export.arxiv.org/api/query?search_query=ti%3A%22low-rank+adaptation%22+AND+cat%3Acs.CL&start=0&max_results=5&sortBy=submittedDate&sortOrder=ascending",
+  "status": 200,
+  "content_type": "application/atom+xml; charset=utf-8",
+  "recorded_at": "2026-11-18T04:20:32+00:00"
+}

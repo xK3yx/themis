@@ -1,0 +1,24 @@
+{
+ "fixture": "memory_terms.tex",
+ "cases": ["C13", "C20"],
+ "transposed": true,
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{lccccc}",
+   "n_rows": 6, "n_cols": 6,
+   "rules": [[-1, "hline"], [0, "hline"], [5, "hline"]],
+   "caption_prefix": "Memory (in Bytes) of parameter, gradient, optimizer state",
+   "label": "tab:WGO",
+   "rows": [
+    ["", "Full-FT", "LoRA", "LoRA-FA", "QLoRA", "VeRA"],
+    ["\\#P", "$12Ld^2+dV$", "$12Ld^2+dV+16Ldr$", "$12Ld^2+dV+8Ldr$", "$12Ld^2+dV+16Ldr$",
+     "$12Ld^2+dV+16dr+8Lr$"],
+    ["\\#TP", "$12Ld^2+dV$", "$16Ldr$", "$8Ldr$", "$16Ldr$", "$8Lr$"],
+    ["$W$", "$24Ld^2+2dV$", "$24Ld^2+2dV+32Ldr$", "$24Ld^2+2dV+16Ldr$", "$6Ld^2+\\frac{dV}{2}+16Ldr$",
+     "$24Ld^2+2dV+32dr+16Lr$"],
+    ["$G$", "$24Ld^2+2dV$", "$32Ldr$", "$16Ldr$", "$16Ldr$", "$8Lr$"],
+    ["$O$", "$48Ld^2+4dV$", "$64Ldr$", "$32Ldr$", "$32Ldr$", "$16Lr$"]
+   ]
+  }
+ ]
+}

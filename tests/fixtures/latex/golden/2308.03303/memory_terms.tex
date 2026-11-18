@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+\centering
+\scriptsize
+\caption{Memory (in Bytes) of parameter, gradient, optimizer state, among Full-FT, LoRA, LoRA-FA, QLoRA, VeRA, in mix-precision fine-tuning. The model is loaded in 16-bit. \#P denotes the number of parameter. \#TP denotes the number of trainable parameter.}
+\label{tab:WGO}
+\addtolength{\tabcolsep}{-5.5pt}
+\begin{tabular}{lccccc} 
+\hline
+ & Full-FT & LoRA & LoRA-FA & QLoRA & VeRA \\ 
+\hline
+\#P & $12Ld^2+dV$ & $12Ld^2+dV+16Ldr$ & $12Ld^2+dV+8Ldr$ & $12Ld^2+dV+16Ldr$ & $12Ld^2+dV+16dr+8Lr$ \\
+\#TP & $12Ld^2+dV$ & $16Ldr$ & $8Ldr$ & $16Ldr$ & $8Lr$ \\
+$W$ & $24Ld^2+2dV$ & $24Ld^2+2dV+32Ldr$ & $24Ld^2+2dV+16Ldr$ & $6Ld^2+\frac{dV}{2}+16Ldr$ & $24Ld^2+2dV+32dr+16Lr$ \\
+$G$ & $24Ld^2+2dV$ & $32Ldr$ & $16Ldr$ & $16Ldr$ & $8Lr$ \\
+$O$ & $48Ld^2+4dV$ & $64Ldr$ & $32Ldr$ & $32Ldr$ & $16Lr$ \\
+\hline
+\end{tabular}
+\end{table}

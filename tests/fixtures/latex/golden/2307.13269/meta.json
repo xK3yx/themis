@@ -1,0 +1,27 @@
+{
+ "archive_sha256": "ec58015aad47b0e18f678e1c47a4c171012eb3e2cb54ffcfb1727ab73880ae8e",
+ "arxiv_id": "2307.13269",
+ "license": "http://creativecommons.org/licenses/by-sa/4.0/",
+ "macros": [
+  {
+   "slice": [
+    1034,
+    1071
+   ],
+   "source_path": "main.tex",
+   "text": "\\newcommand{\\lorahub}{LoraHub\\xspace}"
+  }
+ ],
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "bbh": {
+   "slice": [
+    297,
+    663
+   ],
+   "source_path": "5_analysis.tex",
+   "source_sha256": "5a8b935c2d6418cea61606f4e337cf8a5c33fd3bb79d361b1f33d8c472d1d571"
+  }
+ },
+ "version": "v3"
+}

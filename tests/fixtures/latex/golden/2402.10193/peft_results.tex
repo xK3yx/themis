@@ -1,0 +1,23 @@
+\begin{table}[htbp]
+    \centering
+    \caption{We train a $r=16$ LoRA finetune of \textit{Llama 2-7B} on 1 epoch of UltraChat \cite{ding2023enhancing} and apply \oursmethod with minimal performance degradation. This further shows the generality of \oursmethod, which works on parameter-efficient fine-tunes in addition to full-parameter fine-tunes.}
+    \label{peft-results-app}
+    \scriptsize
+    \resizebox{0.98\textwidth}{!}{
+    \begin{tabular}{@{}lccccccccccc@{}}
+        \toprule
+        Model/Method & ARC & BBH & HellaSwag & TruthfulQA & LAMBADA & WinoGrande & GSM8K & \textbf{Average $\uparrow$} & MT-Bench \\
+
+        \midrule
+        \textit{Llama 2-7B} & 52.56 & 33.76 & 78.96 & 38.96 & 68.39 & 68.98 & 13.57 & 50.74 & -- \\
+
+
+        \textit{Llama 2-7B UltraChat} & 54.52 & 34.14 & 78.99 & 46.84 & 70.83 & 69.53 & 14.71 & 52.79 & 4.93 \\
+
+        BitDelta & 54.61 & 34.28 & 79.10 & 46.60 & 70.58 & 69.30 & 15.16 & 52.80 & 4.87 \\
+
+        \bottomrule
+
+    \end{tabular}
+    }
+\end{table}

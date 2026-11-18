@@ -1,0 +1,17 @@
+{
+ "archive_sha256": "a7ce58b3d2c92f15732c6731772b8ecdbeffe87e8a0ad43a5a69851e82ef7232",
+ "arxiv_id": "2306.07967",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "imagenet": {
+   "slice": [
+    0,
+    823
+   ],
+   "source_path": "tables/imagenet.tex",
+   "source_sha256": "5ae38eea94225f60e2d696063331a70c6ff31cda9db53d127ec0c093a2fe0037"
+  }
+ },
+ "version": "v2"
+}

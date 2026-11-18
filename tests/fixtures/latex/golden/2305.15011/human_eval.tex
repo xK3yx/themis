@@ -1,0 +1,22 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\multirow{2}{*}{{Model}} &  \multicolumn{6}{c}{Language} \\
+\cmidrule{2-7}
+& \texttt{ar} & \texttt{id} & \texttt{zh} & \texttt{my} & \texttt{ta} & \texttt{tl} \\
+\midrule
+Alpaca & 16.7 & 11.7 & 7.1 & 59.6 & 2.1 & 51.7 \\
+\bxllama & 69.2 & 71.3 & 78.3 & \textbf{92.1} & 46.7 & \textbf{81.7} \\
+BLOOMZ & 27.5 & 37.1 & 30.0 & 20.0 & 67.5 & 7.5 \\
+\bxbloom & \textbf{86.7} & \textbf{80.0} & \textbf{84.6} & 28.3 & \textbf{83.8} & 59.2 \\
+\bottomrule
+\end{tabular}
+\caption{
+   The results of human evaluation for model responses across six languages.
+   We map the ranks 1, 2, 3, and 4 into scores 100, 66, 33, and 0, respectively, and then average the two annotator scores.
+   Higher is better. Note that the number here represents a relative ranking score; therefore, a high score does not indicate a perfect model.
+}
+\label{tab:human_eval}
+\end{table}

@@ -1,0 +1,18 @@
+{
+ "fixture": "ft_hparams.tex",
+ "cases": ["C1", "C9", "C13"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{cccccc}",
+   "n_rows": 3, "n_cols": 6,
+   "rules": [[-1, "toprule"], [0, "toprule"], [1, "midrule"], [2, "bottomrule"]],
+   "caption_prefix": "This table shows the hyperparameters used for FT",
+   "label": "tab:pet:glue:ft",
+   "rows": [
+    [{"raw": "\\textbf{FT hyperparameters}", "cs": 6, "style": {"bold": true}}],
+    ["Task", "learning rate", "batch size", "warmup steps", "source sentence length", "epoch"],
+    ["GLUE", ["3e-4", 0.0003], ["100", 100], ["500", 500], ["128", 128], ["20", 20]]
+   ]
+  }
+ ]
+}

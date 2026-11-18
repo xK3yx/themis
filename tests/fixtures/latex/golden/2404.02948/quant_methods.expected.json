@@ -1,0 +1,36 @@
+{
+ "fixture": "quant_methods.tex",
+ "cases": ["C1", "C2", "C5", "C8", "C13"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{c|c|cc|cc}",
+   "n_rows": 5, "n_cols": 6,
+   "rules": [[-1, "toprule"], [0, "cline"], [1, "midrule"], [4, "bottomrule"]],
+   "caption_prefix": "Quantization Error and Accuracy for PiSSA",
+   "label": "table: apdix-nf4_int8_gptq",
+   "rows": [
+    [{"raw": "Model", "rs": 2}, {"raw": "Dataset", "rs": 2},
+     {"raw": "Quantization Error", "cs": 2}, {"raw": "GSM8K Accuracy", "cs": 2}],
+    ["", "", "QLoRA", "PiSSA", "QLoRA", "PiSSA"],
+    ["", "NF4",
+     {"raw": "324.8 (nuclear norm)", "num": 324.8, "lit": "324.8"},
+     {"raw": "\\textbf{265.8} (nuclear norm)", "num": 265.8, "lit": "265.8", "style": {"bold": true}},
+     {"raw": "70.79±0.42", "num": 70.79, "lit": "70.79", "pm": 0.42, "pm_lit": "0.42", "pm_style": "pm"},
+     {"raw": "\\textbf{73.76±0.20}", "num": 73.76, "lit": "73.76", "pm": 0.2, "pm_lit": "0.20",
+      "pm_style": "pm", "style": {"bold": true}}],
+    ["LLaMA-3-8B", "INT8",
+     {"raw": "34.47 (nuclear norm)", "num": 34.47, "lit": "34.47"},
+     {"raw": "\\textbf{28.21} (nuclear norm)", "num": 28.21, "lit": "28.21", "style": {"bold": true}},
+     {"raw": "71.68±0.14", "num": 71.68, "lit": "71.68", "pm": 0.14, "pm_lit": "0.14", "pm_style": "pm"},
+     {"raw": "\\textbf{76.54±0.32}", "num": 76.54, "lit": "76.54", "pm": 0.32, "pm_lit": "0.32",
+      "pm_style": "pm", "style": {"bold": true}}],
+    ["", "GPTQ",
+     {"raw": "20.79 (perplexity)", "num": 20.79, "lit": "20.79"},
+     {"raw": "\\textbf{6.23} (perplexity)", "num": 6.23, "lit": "6.23", "style": {"bold": true}},
+     {"raw": "70.18±0.42", "num": 70.18, "lit": "70.18", "pm": 0.42, "pm_lit": "0.42", "pm_style": "pm"},
+     {"raw": "\\textbf{74.58±0.22}", "num": 74.58, "lit": "74.58", "pm": 0.22, "pm_lit": "0.22",
+      "pm_style": "pm", "style": {"bold": true}}]
+   ]
+  }
+ ]
+}

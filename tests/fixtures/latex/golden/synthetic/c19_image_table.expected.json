@@ -1,0 +1,14 @@
+{
+ "fixture": "c19_image_table.tex",
+ "cases": ["C19"],
+ "tables": [
+  {
+   "image_table": true,
+   "n_rows": 0, "n_cols": 0,
+   "rules": [],
+   "caption_prefix": "SYNTHETIC: a results table included as an image",
+   "label": "tab:synthetic-c19",
+   "rows": []
+  }
+ ]
+}

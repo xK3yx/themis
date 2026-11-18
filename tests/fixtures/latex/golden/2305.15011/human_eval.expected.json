@@ -1,0 +1,32 @@
+{
+ "fixture": "human_eval.tex",
+ "cases": ["C1", "C2", "C4", "C5", "C13", "C15"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{@{}lrrrrrr@{}}",
+   "n_rows": 6, "n_cols": 7,
+   "rules": [[-1, "toprule"], [0, "cmidrule"], [1, "midrule"], [5, "bottomrule"]],
+   "caption_prefix": "The results of human evaluation for model responses",
+   "label": "tab:human_eval",
+   "header_rows": [0, 1],
+   "col_headers": [["{Model}"],
+                   ["Language", "\\texttt{ar}"], ["Language", "\\texttt{id}"],
+                   ["Language", "\\texttt{zh}"], ["Language", "\\texttt{my}"],
+                   ["Language", "\\texttt{ta}"], ["Language", "\\texttt{tl}"]],
+   "rows": [
+    [{"raw": "{Model}", "rs": 2, "text": "Model"}, {"raw": "Language", "cs": 6}],
+    ["", "\\texttt{ar}", "\\texttt{id}", "\\texttt{zh}", "\\texttt{my}", "\\texttt{ta}", "\\texttt{tl}"],
+    ["Alpaca", ["16.7", 16.7], ["11.7", 11.7], ["7.1", 7.1], ["59.6", 59.6], ["2.1", 2.1], ["51.7", 51.7]],
+    [{"raw": "\\bxllama", "text": "BX_LLaMA"}, ["69.2", 69.2], ["71.3", 71.3], ["78.3", 78.3],
+     {"raw": "\\textbf{92.1}", "num": 92.1, "lit": "92.1", "style": {"bold": true}}, ["46.7", 46.7],
+     {"raw": "\\textbf{81.7}", "num": 81.7, "lit": "81.7", "style": {"bold": true}}],
+    ["BLOOMZ", ["27.5", 27.5], ["37.1", 37.1], ["30.0", 30.0], ["20.0", 20.0], ["67.5", 67.5], ["7.5", 7.5]],
+    [{"raw": "\\bxbloom", "text": "BX_BLOOM"},
+     {"raw": "\\textbf{86.7}", "num": 86.7, "lit": "86.7", "style": {"bold": true}},
+     {"raw": "\\textbf{80.0}", "num": 80.0, "lit": "80.0", "style": {"bold": true}},
+     {"raw": "\\textbf{84.6}", "num": 84.6, "lit": "84.6", "style": {"bold": true}}, ["28.3", 28.3],
+     {"raw": "\\textbf{83.8}", "num": 83.8, "lit": "83.8", "style": {"bold": true}}, ["59.2", 59.2]]
+   ]
+  }
+ ]
+}

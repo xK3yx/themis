@@ -6,6 +6,7 @@ import sqlite3
 import pytest
 
 from tests.ledger.conftest import NOW, hx
+from themis.ledger.db import _expected_objects
 
 Err = sqlite3.IntegrityError
 
@@ -106,15 +107,48 @@ def test_span_text_length_checked_in_db(raw):
     raw.node("cited", {"source": src, "locator": raw.span(0, 6, "héllo")})
 
 
+def _cell_loc(raw, cell=(6, 10, "71.2"), row=0, col=2):
+    table = raw.span(0, 20, "x" * 20)
+    return {"type": "table_cell", "table": table, "cell": raw.span(*cell), "row": row, "col": col}
+
+
 def test_table_cell_nonnegative(raw):
     src = raw.source()
-    table = raw.span(0, 5, "hello")
-    ok = {"type": "table_cell", "table": table, "row": 0, "col": 2}
-    raw.node("cited", {"source": src, "locator": ok})
-    for bad in ({"row": -1, "col": 0}, {"row": 0, "col": -3}, {"row": 1.5, "col": 0}):
-        loc = {"type": "table_cell", "table": table, **bad}
+    raw.node("cited", {"source": src, "locator": _cell_loc(raw)})
+    for row, col in ((-1, 0), (0, -3), (1.5, 0)):
         with pytest.raises(Err, match="V5"):
-            raw.node("cited", {"source": src, "locator": loc})
+            raw.node("cited", {"source": src, "locator": _cell_loc(raw, row=row, col=col)})
+
+
+def test_table_cell_requires_cell_span(raw):
+    src = raw.source()
+    loc = _cell_loc(raw)
+    del loc["cell"]
+    with pytest.raises(Err, match="V5b"):
+        raw.node("cited", {"source": src, "locator": loc})
+
+
+@pytest.mark.parametrize(
+    "cell",
+    [
+        (18, 22, "71.2"),  # ends past the table span
+        (10, 10, ""),  # empty
+        (-1, 3, "71.2"),  # starts before the table
+        ("6", 10, "71.2"),  # wrong type
+    ],
+)
+def test_table_cell_span_inside_table(raw, cell):
+    src = raw.source()
+    with pytest.raises(Err, match="V5b"):
+        raw.node("cited", {"source": src, "locator": _cell_loc(raw, cell=cell)})
+
+
+def test_table_cell_text_length_checked_in_db(raw):
+    src = raw.source()
+    with pytest.raises(Err, match="V6b"):
+        raw.node("cited", {"source": src, "locator": _cell_loc(raw, cell=(6, 10, "71.25"))})
+    # '±' is 2 bytes in UTF-8.
+    raw.node("cited", {"source": src, "locator": _cell_loc(raw, cell=(6, 10, "±.3"))})
 
 
 def test_measured_requires_run(raw):
@@ -203,7 +237,21 @@ def test_derived_edges_materialised(raw, conn):
 
 # ---------------------------------------------------------------- Invariant 2: append-only
 
-TABLES = ["blobs", "sources", "runs", "nodes", "edges", "observations"]
+# Every table in the schema, read from a fresh install, so a new table is covered
+# automatically (and an empty one makes the update/delete tests fail until populated).
+TABLES = sorted(name for name, (kind, _) in _expected_objects().items() if kind == "table")
+
+
+def test_m1_tables_present():
+    assert {"llm_calls", "http_fetches", "paper_records", "paper_links", "stage_records"} <= set(
+        TABLES
+    )
+
+
+@pytest.mark.parametrize("table", TABLES)
+def test_every_table_has_append_only_triggers(table):
+    triggers = {n for n, (kind, _) in _expected_objects().items() if kind == "trigger"}
+    assert {f"{table}_no_update", f"{table}_no_delete", f"{table}_no_overwrite"} <= triggers
 
 
 @pytest.fixture
@@ -212,6 +260,10 @@ def populated(raw, conn):
     d = raw.derived([a, b])
     raw.node("measured", {"run": raw.run(), "metric": "acc"})
     conn.execute("INSERT INTO observations VALUES (?,?,?,?)", (d, hx("p"), '{"role":"test"}', NOW))
+    raw.llm_call()
+    r1, r2 = raw.paper_record(arxiv_id="2106.09685"), raw.paper_record(arxiv_id="2305.14314")
+    raw.paper_link(r1, r2)
+    raw.stage_record()
     return conn
 
 
@@ -361,3 +413,63 @@ def test_observation_requires_existing_node(conn):
             "INSERT INTO observations VALUES (?,?,?,?)",
             (hx("ghost"), hx("p"), '{"role":"test"}', NOW),
         )
+
+
+# ---------------------------------------------------------------- M1 tables
+
+
+def test_llm_call_role_must_be_known(raw):
+    with pytest.raises(Err, match="CHECK"):
+        raw.llm_call(role="oracle")
+
+
+def test_http_fetch_url_never_holds_an_email(raw):
+    raw.http_fetch(url="https://api.openalex.org/works?mailto=<OPENALEX_MAILTO>")
+    with pytest.raises(Err, match="CHECK"):
+        raw.http_fetch(url="https://api.openalex.org/works?mailto=someone@example.org")
+
+
+def test_paper_record_needs_an_identifier(raw):
+    with pytest.raises(Err, match="CHECK"):
+        raw.paper_record(arxiv_id=None, doi=None, openalex_id=None)
+
+
+def test_paper_record_doi_lowercase(raw):
+    raw.paper_record(arxiv_id=None, doi="10.1000/abc")
+    with pytest.raises(Err, match="CHECK"):
+        raw.paper_record(arxiv_id=None, doi="10.1000/ABC")
+
+
+def test_paper_link_ordered_and_known(raw):
+    r1, r2 = raw.paper_record(arxiv_id="2106.09685"), raw.paper_record(arxiv_id="2305.14314")
+    a, b = sorted([r1, r2])
+    with pytest.raises(Err, match="CHECK"):
+        raw.paper_link(b, a, ordered=False)
+    with pytest.raises(Err):
+        raw.paper_link(a, hx("ghost"))
+
+
+def test_stage_attempts(raw):
+    raw.stage_record(key="k", status="failed", attempt=1)
+    raw.stage_record(key="k", status="done", attempt=2)
+    with pytest.raises(Err, match="V25"):
+        raw.stage_record(key="k", status="done", attempt=3)  # already done
+
+
+def test_stage_attempts_must_be_consecutive(raw):
+    with pytest.raises(Err, match="V25"):
+        raw.stage_record(key="k2", status="done", attempt=2)  # no attempt 1
+    raw.stage_record(key="k2", status="failed", attempt=1)
+    with pytest.raises(Err, match="V25"):
+        raw.stage_record(key="k2", status="done", attempt=3)  # skips 2
+
+
+def test_stage_skipped_is_final(raw):
+    raw.stage_record(key="k3", status="skipped", attempt=1)
+    with pytest.raises(Err, match="V25"):
+        raw.stage_record(key="k3", status="done", attempt=2)
+
+
+def test_stage_version_bump_starts_fresh(raw):
+    raw.stage_record(key="k4", status="done", attempt=1, version="1")
+    raw.stage_record(key="k4", status="done", attempt=1, version="2")
