@@ -47,6 +47,7 @@ class Cell:
     missing: str | None
     style: dict
     text: str | None = None
+    pad: bool = False
 
 
 @dataclass
@@ -156,6 +157,7 @@ def expand(tex: bytes, t: dict) -> Table:
                     missing,
                     spec.get("style", {}),
                     spec.get("text"),
+                    bool(spec.get("pad")),
                 )
             )
             for dr in range(rs):
