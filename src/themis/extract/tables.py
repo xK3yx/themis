@@ -21,6 +21,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from itertools import accumulate
 
+from themis.numbers import LITERAL_PATTERN, parse_literal
+
 PARSER_VERSION = "1"
 
 HANDLERS: dict[str, Callable] = {}
@@ -508,11 +510,24 @@ def _image_table(doc: Doc, ctx: Ctx, f, caption, label) -> list[ParsedTable] | N
     pipeline can skip it explicitly instead of losing it."""
     if "\\includegraphics" not in doc.masked[f[1] : f[2]]:
         return None
-    return [ParsedTable(
-        source_path=doc.path, tabular_path=doc.path, env="image", colspec="",
-        table_span=doc.span(f[0], f[3]), tabular_span=None, caption=caption, label=label,
-        n_rows=0, n_cols=0, rules=[], cells=[], image_table=True, warnings=["image_table"],
-    )]
+    return [
+        ParsedTable(
+            source_path=doc.path,
+            tabular_path=doc.path,
+            env="image",
+            colspec="",
+            table_span=doc.span(f[0], f[3]),
+            tabular_span=None,
+            caption=caption,
+            label=label,
+            n_rows=0,
+            n_cols=0,
+            rules=[],
+            cells=[],
+            image_table=True,
+            warnings=["image_table"],
+        )
+    ]
 
 
 _FULL_WIDTH_RULES = {"hline", "midrule", "specialrule", "bottomrule"}
@@ -526,11 +541,23 @@ def _header_paths(pt: ParsedTable) -> None:
     ends = [after for after, kind in pt.rules if kind in _FULL_WIDTH_RULES and after >= 0]
     last = min(ends) if ends else 0
     pt.header_rows = list(range(min(last, pt.n_rows - 1) + 1)) if pt.n_rows else []
-    heads = sorted((c for c in pt.cells if c.row in pt.header_rows and c.raw),
-                   key=lambda c: (c.row, c.col))
+    heads = sorted(
+        (c for c in pt.cells if c.row in pt.header_rows and c.raw), key=lambda c: (c.row, c.col)
+    )
     pt.col_headers = [
         [c.raw for c in heads if c.col <= col < c.col + c.colspan] for col in range(pt.n_cols)
     ]
+
+
+_FULL_LITERAL = re.compile(LITERAL_PATTERN + r"(?![\w.])", re.ASCII)
+
+
+@handler("C9")
+def _number_formats(raw: str, lead: int):
+    """The full literal grammar shared with ledger check V24 (themis.numbers): thousands
+    separators (1,024 and 1{,}024), e-notation, \\times10^{k}, the Unicode minus sign.
+    Enabling this also makes a trailing \\% set the percent flag."""
+    return _FULL_LITERAL.match(raw, lead)
 
 
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
@@ -721,8 +748,6 @@ def _number(doc: Doc, ctx: Ctx, cell: Cell) -> None:
     literal = _h("C9")(raw, lead) or _BASIC_LITERAL.match(raw, lead)
     if not literal:
         return
-    from themis.numbers import parse_literal
-
     value = parse_literal(literal.group(0))
     if value is None:
         return

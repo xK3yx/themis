@@ -28,6 +28,9 @@ _LITERAL = re.compile(
 )
 
 
+LITERAL_PATTERN = _LITERAL.pattern  # for scanners (e.g. the table parser) that search text
+
+
 def _norm_sign(s: str) -> str:
     return s.replace(MINUS, "-")
 

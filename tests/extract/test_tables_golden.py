@@ -11,7 +11,7 @@ import pytest
 from tests.extract.golden import CASES, Golden, load_goldens
 from themis.extract import tables as T
 
-IMPLEMENTED = ["C13", "C1", "C2", "C3", "C14", "C17", "C18", "C19", "C20", "C4"]
+IMPLEMENTED = ["C13", "C1", "C2", "C3", "C14", "C17", "C18", "C19", "C20", "C4", "C9"]
 
 GOLDENS = load_goldens()
 STRUCTURAL = {"C1", "C2", "C3", "C14", "C17", "C18", "C19"}
@@ -29,6 +29,29 @@ def implicit_cases(g: Golden) -> set[str]:
             if c.colspan > 1 and c.rowspan > 1:
                 need.add("C3")
     return need | (set(g.cases) & STRUCTURAL)
+
+
+def content_cases(g: Golden) -> set[str]:
+    """Content cases a golden's expected data relies on, tagged or not (for the full test)."""
+    need = set()
+    for t in g.tables:
+        for c in t.cells:
+            s = c.style
+            if s.get("bold") or s.get("italic"):
+                need.add("C5")
+            if s.get("color"):
+                need.add("C7")
+            if s.get("arrow"):
+                need.add("C11")
+            if s.get("marks"):
+                need.add("C12")
+            if c.number and c.number.get("pm") is not None:
+                need.add("C8")
+            if c.missing not in (None, "empty"):
+                need.add("C10")
+            if c.text is not None:
+                need.add("C15")
+    return need
 
 
 def run_parser(g: Golden) -> list:
@@ -159,7 +182,7 @@ def test_case(case):
 
 @pytest.mark.parametrize("g", GOLDENS, ids=[g.id for g in GOLDENS])
 def test_full(g):
-    needed = (set(g.cases) | implicit_cases(g)) - {"C20"}
+    needed = (set(g.cases) | implicit_cases(g) | content_cases(g)) - {"C20"}
     if not needed <= set(IMPLEMENTED):
         pytest.skip(f"needs {sorted(needed - set(IMPLEMENTED))}")
     aspects = set(CASES)
