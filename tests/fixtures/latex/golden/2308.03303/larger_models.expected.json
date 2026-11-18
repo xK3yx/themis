@@ -1,0 +1,25 @@
+{
+ "fixture": "larger_models.tex",
+ "cases": ["C1", "C2", "C4", "C13"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{lcc}",
+   "n_rows": 6, "n_cols": 3,
+   "rules": [[-1, "hline"], [0, "cline"], [1, "hline"], [5, "hline"]],
+   "caption_prefix": "Performance on larger base models",
+   "label": "tab:larger-model",
+   "header_rows": [0, 1],
+   "col_headers": [["Method"],
+                   ["GSM8K Accuracy~ ~", "DeepSeek-v2-lite-chat"],
+                   ["GSM8K Accuracy~ ~", "Qwen3-8B"]],
+   "rows": [
+    [{"raw": "Method", "rs": 2}, {"raw": "GSM8K Accuracy~ ~", "cs": 2}],
+    ["", "DeepSeek-v2-lite-chat", "Qwen3-8B"],
+    ["Vanilla (Reasoning mode)", ["58.1", 58.1], ["76.9", 76.9]],
+    ["LoRA (Non-Thinking 0-shot)", ["66.5", 66.5], ["82.4", 82.4]],
+    ["LoRA-Pro (Non-Thinking 0-shot)", ["71.2", 71.2], ["84.5", 84.5]],
+    ["LoRA-FA (Non-Thinking 0-shot)", ["71.1", 71.1], ["84.5", 84.5]]
+   ]
+  }
+ ]
+}

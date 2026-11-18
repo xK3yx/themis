@@ -1,0 +1,38 @@
+{
+ "fixture": "allocation.tex",
+ "cases": ["C5", "C13"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{c|cccccccc|c}",
+   "n_rows": 4, "n_cols": 10,
+   "rules": [[-1, "toprule"], [0, "midrule"], [0, "midrule"], [3, "bottomrule"]],
+   "caption_prefix": "Average performances (low-compute, low-epoch regime",
+   "label": "Tab:Allocate",
+   "rows": [
+    [{"raw": "\\textbf{Param Allocation}", "style": {"bold": true}},
+     {"raw": "\\textbf{SST-2}", "style": {"bold": true}}, {"raw": "\\textbf{MNLI}", "style": {"bold": true}},
+     {"raw": "\\textbf{QNLI}", "style": {"bold": true}}, {"raw": "\\textbf{QQP}", "style": {"bold": true}},
+     {"raw": "\\textbf{RTE}", "style": {"bold": true}}, {"raw": "\\textbf{STS-B}", "style": {"bold": true}},
+     {"raw": "\\textbf{MRPC}", "style": {"bold": true}}, {"raw": "\\textbf{CoLA}", "style": {"bold": true}},
+     {"raw": "\\textbf{Avg}", "style": {"bold": true}}],
+    ["Increasing", ["87.2", 87.2],
+     {"raw": "\\textbf{ 77.9 }", "num": 77.9, "lit": "77.9", "style": {"bold": true}},
+     ["79.4", 79.4], ["78.7", 78.7], ["71.6", 71.6], ["77.6", 77.6],
+     {"raw": "\\textbf{ 81.4 }", "num": 81.4, "lit": "81.4", "style": {"bold": true}},
+     ["32.0", 32.0], ["73.2", 73.2]],
+    [{"raw": "\\textbf{Uniform}", "style": {"bold": true}},
+     {"raw": "\\textbf{87.8}", "num": 87.8, "lit": "87.8", "style": {"bold": true}},
+     ["77.4", 77.4],
+     {"raw": "\\textbf{ 80.1 }", "num": 80.1, "lit": "80.1", "style": {"bold": true}},
+     {"raw": "\\textbf{ 80.5 }", "num": 80.5, "lit": "80.5", "style": {"bold": true}},
+     {"raw": "\\textbf{ 73.9 }", "num": 73.9, "lit": "73.9", "style": {"bold": true}},
+     {"raw": "\\textbf{78.1}", "num": 78.1, "lit": "78.1", "style": {"bold": true}},
+     ["80.4", 80.4], ["34.3", 34.3],
+     {"raw": "\\textbf{74.0}", "num": 74.0, "lit": "74.0", "style": {"bold": true}}],
+    ["Decreasing", ["86.4", 86.4], ["75.8", 75.8], ["78.4", 78.4], ["77.0", 77.0], ["70.4", 70.4],
+     ["77.1", 77.1], ["78.7", 78.7],
+     {"raw": "\\textbf{ 35.8 }", "num": 35.8, "lit": "35.8", "style": {"bold": true}}, ["72.4", 72.4]]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "archive_sha256": "f2b2182885098d9fabf026a0a9235beceeede38c5931c1af7c7bb3bdecc3e3ca",
+ "arxiv_id": "2308.03303",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "larger_models": {
+   "slice": [
+    31280,
+    31859
+   ],
+   "source_path": "paper.tex",
+   "source_sha256": "8669e29b36ed234840dada91030077c30ebca15798b8346d8dff16cc17f5bd57"
+  },
+  "memory_terms": {
+   "slice": [
+    18156,
+    19025
+   ],
+   "source_path": "appendix.tex",
+   "source_sha256": "80058e5fbecad2caac31291c7526d8d12e6219fd447806d0d98004c418d66804"
+  }
+ },
+ "version": "v3"
+}

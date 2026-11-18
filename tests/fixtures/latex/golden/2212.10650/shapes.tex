@@ -1,0 +1,18 @@
+\begin{table*}[bp!]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{c|cccccc}
+    \toprule
+        Module Name & Factor Name & Symbol & Shape & Parameters & Module Parameters & Constraint \\
+        \midrule
+        \multirow{2}{*}{KronA} & Kronecker Factor & $\mathbf{A}_k$ & $a_1 \times a_2$ & $a_1a_2$ & \multirow{2}{*}{$a_1a_2+b_1b_2$} & \multirow{2}{*}{$a_1b_1=a_2b_2=d_h$}\\
+        & Kronecker Factor & $\mathbf{B}_k$ & $b_1 \times b_2$ & $b_1b_2$ & &  \\
+        \midrule
+        \multirow{2}{*}{LoRA} & Down Projection & $\mathbf{A}$ & $d_h \times r$ & $d_hr$ & \multirow{2}{*}{$2d_hr$} & \multirow{2}{*}{$r<\frac{d_h}{2}$}\\
+        & Up Projection & $\mathbf{B}$ & $r \times d_h$ & $d_hr$ & \\
+    \bottomrule
+    \end{tabular}%
+    }
+    \caption{This table compares some details of Kronecker factors with LoRA projections.}
+    \label{tab:replacement-shapes}
+\end{table*}

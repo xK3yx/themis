@@ -1,0 +1,27 @@
+{
+ "archive_sha256": "f408ce83453768040cb098ca33816afe6076d88263df6e0d96a3ae04356bb155",
+ "arxiv_id": "2205.12410",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "macros": [
+  {
+   "slice": [
+    1785,
+    1820
+   ],
+   "source_path": "main.tex",
+   "text": "\\newcommand{\\sysname}{{\\tt AdaMix}}"
+  }
+ ],
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "bert_glue": {
+   "slice": [
+    5951,
+    7178
+   ],
+   "source_path": "subfiles/experiments.tex",
+   "source_sha256": "b09648a6cb0a7040b29549cd3612aac3f3df8c4b5930ef691225bc045ca60662"
+  }
+ },
+ "version": "v2"
+}

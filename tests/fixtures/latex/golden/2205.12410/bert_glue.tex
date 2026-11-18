@@ -1,0 +1,28 @@
+\begin{table}[!htb]
+%\vspace{-0.1in}
+\small
+	\begin{center}
+% 	\resizebox{1.0\linewidth}{!}{
+		\begin{tabular}{lrc}
+			\toprule \bf Model    &\#Param.     &\bf Avg. \\ 
+			\midrule
+            % \multicolumn{9}{c}{\textbf{BERT\textsubscript{BASE}}}\\ \hline	
+			Full Fine-tuning$^\dagger{}$&   110M &82.7\\ \midrule
+			Houlsby Adapter$^\dagger{}$&0.9M&83.0\\ %\midrule
+			 BitFit$^\diamond$ & 0.1M& 82.3\\%\midrule
+			Prefix-tuning$^\dagger{}$&0.2M&82.1\\ %\midrule
+			LoRA$^\dagger{}$&0.3M &82.2\\ %\midrule
+			UNIPELT (AP)$^\dagger{}$&1.1M&83.1\\ %\midrule
+			UNIPELT (APL)$^\dagger{}$&1.4M&83.5\\ %\midrule
+
+				{{\sysname} Adapter}  &0.9M& \textbf{84.5}\\
+				\bottomrule
+			    
+        
+		\end{tabular}
+	\end{center}
+	\caption{Results for NLU tasks on GLUE development set with \textbf{BERT-base} encoder and {\sysname} with a mixture-of-adapters. The best result on each task is in \textbf{bold}. $^\dagger{}$ and $^\diamond$ denote results reported from \cite{mao2021unipelt,zaken2021bitfit}. Detailed task-specific results are reported in Table~\ref{tab:app-bert_glue_dev} of Appendix. \#Param. refers to the number of tunable adaptation parameters during inference.
+	}
+	\label{tab:bert_glue_dev}
+%\lgspace
+\end{table}

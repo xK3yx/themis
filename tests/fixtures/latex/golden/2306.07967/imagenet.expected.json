@@ -1,0 +1,35 @@
+{
+ "fixture": "imagenet.tex",
+ "cases": ["C1", "C4", "C7", "C13", "C14", "C16"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{l ccccc}",
+   "n_rows": 7, "n_cols": 6,
+   "rules": [[-1, "toprule"], [0, "cmidrule"], [0, "cmidrule"], [1, "midrule"], [6, "bottomrule"]],
+   "caption_prefix": "\\textbf{Results on domain generalization}",
+   "label": "tab:dg",
+   "header_rows": [0, 1],
+   "col_headers": [[],
+                   ["\\textbf{Source}", "ImageNet"],
+                   ["\\textbf{Target}", "-Sketch"],
+                   ["\\textbf{Target}", "-V2"],
+                   ["\\textbf{Target}", "-A"],
+                   ["\\textbf{Target}", "-R"]],
+   "rows": [
+    ["", {"raw": "\\textbf{Source}", "style": {"bold": true}},
+     {"raw": "\\textbf{Target}", "cs": 4, "style": {"bold": true}}],
+    ["", "ImageNet", "-Sketch", "-V2", "-A", "-R"],
+    ["Adapter \\cite{houlsby2019parameter}", ["70.5", 70.5], ["16.4", 16.4], ["59.1", 59.1], ["5.5", 5.5], ["22.1", 22.1]],
+    ["VPT \\cite{jia2022visual}", ["70.5", 70.5], ["18.3", 18.3], ["58.0", 58.0], ["4.6", 4.6], ["23.2", 23.2]],
+    ["LoRA \\cite{hu2021lora}", ["70.8", 70.8], ["20.0", 20.0], ["59.3", 59.3], ["6.9", 6.9], ["23.3", 23.3]],
+    ["NOAH \\cite{zhang2022neural}", ["71.5", 71.5], ["24.8", 24.8], ["66.1", 66.1], ["11.9", 11.9], ["28.5", 28.5]],
+    [{"raw": "GLoRA (0.29M)", "style": {"color": "lightgray"}},
+     {"raw": "78.3", "num": 78.3, "style": {"color": "lightgray"}},
+     {"raw": "30.6", "num": 30.6, "style": {"color": "lightgray"}},
+     {"raw": "67.5", "num": 67.5, "style": {"color": "lightgray"}},
+     {"raw": "13.3", "num": 13.3, "style": {"color": "lightgray"}},
+     {"raw": "31.0", "num": 31.0, "style": {"color": "lightgray"}}]
+   ]
+  }
+ ]
+}

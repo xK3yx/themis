@@ -1,0 +1,17 @@
+{
+ "archive_sha256": "6561e4982d9341232dd234a7525d9bba34e9485011253f55bcde5a14a1ae5f65",
+ "arxiv_id": "2402.04902",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "memory": {
+   "slice": [
+    43393,
+    44114
+   ],
+   "source_path": "main.tex",
+   "source_sha256": "c68c83c0ec51fc8378a938a0151759f343c0558fc81ef4b0d8cea85ed4777992"
+  }
+ },
+ "version": "v6"
+}

@@ -1,0 +1,39 @@
+\begin{tabular}{@{}l|x{70}|x{45}|x{40}|x{45}|x{45}@{}}
+\toprule
+ Model & Pretrain & \#Frames & GFlops & Top-1 & Top-5\\
+\toprule
+\multicolumn{6}{@{}l}{\it Methods with full-finetuning} \\
+% TSN\citep{wang2018temporal} & IN-1K & 16$\times$1$\times$1 & 66 & 30.0 & 60.5 \\
+TSM\citep{tsm} &IN1K & 16$\times$1$\times$1 & 66 & 63.3 & 88.5 \\
+GST\citep{gst} &IN1K & 16$\times$1$\times$1 & 59 & 62.6 & 87.9 \\
+MSNet\citep{msnet} & IN1K & 16$\times$1$\times$1 & 101 & 64.7 & 89.4 \\
+CT-Net\citep{ct_net} & IN1K & 16$\times$1$\times$1 & 75 & 64.5 & 89.3 \\
+TDN\citep{tdn} & IN1K & 16$\times$1$\times$1 & 72 & 65.3 & 89.5 \\
+% \midrule
+TimeSformer-HR\citep{timesformer} & IN21K & 16$\times$3$\times$1 & 5109 & 62.5 & - \\
+X-ViT\citep{xvit} & IN21K & 32$\times$3$\times$1 & 1270 & 65.4 & 90.7 \\
+Mformer-L\citep{mformer} & IN21K+K400 & 32$\times$3$\times$1 & 3555 & 68.1 & 91.2 \\
+ViViT-L\citep{vivit} & IN21K+K400 & 16$\times$3$\times$4 & 11892  & 65.4 & 89.8 \\
+% MViT-B,64$\times$3\citep{fan2021multiscale} & K400 & 64$\times$1$\times$3 & 1365 & 67.7 & 90.9 \\
+MViT-B-24,32$\times$3\citep{fan2021multiscale} & K600 & 32$\times$1$\times$3 & 708 & 68.7 & 91.5 \\
+Swin-B\citep{liu2021video} & IN21K+K400 & 32$\times$3$\times$1 & 963 & 69.6 & 92.7 \\
+UniFormer-B\citep{li2022uniformer} & IN1K+K600 & 32$\times$3$\times$1 & 777 & 71.2 & 92.8 \\
+\revision{OMNIVORE (Swin-B)\citep{omnivore}} & \revision{IN22K+K400+SUN} & \revision{32$\times$3$\times$1} & \revision{963} & \revision{71.4} & \revision{93.5} \\
+\revision{MTV-B(320p)\citep{mtv}} & \revision{IN21K+K400} & \revision{32$\times$3$\times$4} & \revision{11160} & \revision{68.5} & \revision{90.4} \\
+% \midrule
+\revision{ViT-B w/o ST-Adapter} & \revision{CLIP} & \revision{8$\times$3$\times$1} & \revision{419} & \revision{44.0} & \revision{77.0} \\
+\revision{ViT-L w/o ST-Adapter} & \revision{CLIP} & \revision{8$\times$3$\times$1} & \revision{1941} & \revision{48.7} & \revision{77.5} \\
+\midrule
+\multicolumn{6}{@{}l}{\it Methods with frozen backbone} \\
+Our ViT-B w/ ST-Adapter & CLIP & 8$\times$3$\times$1 & 489 & 67.1 & 91.2 \\
+Our ViT-B w/ ST-Adapter & CLIP & 16$\times$3$\times$1 & 977 & 69.3 & 92.3 \\
+Our ViT-B w/ ST-Adapter & CLIP & 32$\times$3$\times$1 & 1955 & 69.5 & 92.6 \\
+Our ViT-L w/ ST-Adapter & CLIP & 8$\times$3$\times$1 & 2062 & 70.0 & 92.3 \\
+Our ViT-L w/ ST-Adapter & CLIP & 16$\times$3$\times$1 & 4124 & 71.9 & 93.4 \\
+Our ViT-L w/ ST-Adapter & CLIP & 32$\times$3$\times$1 & 8248 & \textbf{72.3} & \textbf{93.9} \\
+% \revision{Our ViT-L w/ ST-Adapter} & \revision{CLIP} & \revision{32$\times$3$\times$1} & \revision{8248} & \revision{\textbf{72.3}} & \revision{93.9} \\
+\bottomrule
+\end{tabular}
+
+
+% If two per layer 2181 GFlops

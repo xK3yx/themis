@@ -1,0 +1,35 @@
+{
+ "archive_sha256": "35fc3b67838ec446f94e699cf5efc8e8c325e0654f7142c1b5b6bfaffb6b24f8",
+ "arxiv_id": "2305.15011",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "macros": [
+  {
+   "slice": [
+    4138,
+    4185
+   ],
+   "source_path": "emnlp2023.tex",
+   "text": "\\newcommand{\\bxbloom}{BX$_\\text{BLOOM}$\\xspace}"
+  },
+  {
+   "slice": [
+    4186,
+    4233
+   ],
+   "source_path": "emnlp2023.tex",
+   "text": "\\newcommand{\\bxllama}{BX$_\\text{LLaMA}$\\xspace}"
+  }
+ ],
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "human_eval": {
+   "slice": [
+    0,
+    925
+   ],
+   "source_path": "tables/human_eval.tex",
+   "source_sha256": "0058509535084c51b85bf2b895fcc544d7c0dd0f3df517e230f48de90de94f5f"
+  }
+ },
+ "version": "v2"
+}

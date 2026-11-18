@@ -1,0 +1,18 @@
+\begin{table}[!t]
+    \resizebox{1.0\linewidth}{!}{
+    \begin{tabular}{L{1.5cm}P{1.5cm}P{1.3cm}P{1.3cm}P{1.3cm}}
+    \toprule
+     \rowcolor{Gray}& \small OpenLLaMA & \multicolumn{3}{c}{\small LLaMA} \\
+     \rowcolor{Gray}Methods & 3B & 7B & 13B & 33B \\
+     \arrayrulecolor{black} \midrule
+     \small LoRA  & 15.1 & 25.1 & 43.8 & 71.9 \\
+     \arrayrulecolor{lightgray}\midrule
+     \small QAT  & 44.2 & 79.5  & OOM & OOM \\
+     \small QAT-LoRA  & 22.6 & 41.9 & 70.6 & OOM \\
+     \small L4Q  & 15.3 & 25.4 & 44.3 & 73.2 \\
+    \arrayrulecolor{black}\bottomrule
+    \end{tabular}
+    }
+    \caption{Memory cost (GB) for fine-tuning LLMs on NVIDIA A100 GPU. (OOM: Out of Memory)}
+    \label{table:memory}
+\end{table}

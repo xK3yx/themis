@@ -1,0 +1,25 @@
+{
+ "fixture": "bert_glue.tex",
+ "cases": ["C12", "C13", "C15"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{lrc}",
+   "n_rows": 9, "n_cols": 3,
+   "rules": [[-1, "toprule"], [0, "midrule"], [1, "midrule"], [8, "bottomrule"]],
+   "caption_prefix": "Results for NLU tasks on GLUE development set",
+   "label": "tab:bert_glue_dev",
+   "rows": [
+    [{"raw": "\\bf Model", "style": {"bold": true}}, "\\#Param.", {"raw": "\\bf Avg.", "style": {"bold": true}}],
+    [{"raw": "Full Fine-tuning$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "110M", ["82.7", 82.7]],
+    [{"raw": "Houlsby Adapter$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "0.9M", ["83.0", 83.0]],
+    [{"raw": "BitFit$^\\diamond$", "style": {"marks": ["diamond"]}}, "0.1M", ["82.3", 82.3]],
+    [{"raw": "Prefix-tuning$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "0.2M", ["82.1", 82.1]],
+    [{"raw": "LoRA$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "0.3M", ["82.2", 82.2]],
+    [{"raw": "UNIPELT (AP)$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "1.1M", ["83.1", 83.1]],
+    [{"raw": "UNIPELT (APL)$^\\dagger{}$", "style": {"marks": ["dagger"]}}, "1.4M", ["83.5", 83.5]],
+    [{"raw": "{{\\sysname} Adapter}", "text": "AdaMix Adapter"}, "0.9M",
+     {"raw": "\\textbf{84.5}", "num": 84.5, "lit": "84.5", "style": {"bold": true}}]
+   ]
+  }
+ ]
+}

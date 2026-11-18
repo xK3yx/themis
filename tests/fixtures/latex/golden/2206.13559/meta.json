@@ -1,0 +1,25 @@
+{
+ "archive_sha256": "10fb5e798e0a5c2d50b271eea3f90a89bcd90b3fed0c3f3fa2b8349e7359b17e",
+ "arxiv_id": "2206.13559",
+ "license": "http://creativecommons.org/licenses/by/4.0/",
+ "oai_url": "https://oaipmh.arxiv.org/oai",
+ "tables": {
+  "ssv2": {
+   "input": {
+    "slice": [
+     0,
+     2698
+    ],
+    "source_path": "tables/sota_ssv2.tex",
+    "source_sha256": "e4b4b6b6daa145abac55fa96445c1b302b8b49e1c13bf71a2fa118842e7a04ed"
+   },
+   "slice": [
+    9232,
+    9827
+   ],
+   "source_path": "04-Experiments.tex",
+   "source_sha256": "c0b946484cf2545fc207dafd7fe58aa244b58d0534cc3c719c268e1ad953addf"
+  }
+ },
+ "version": "v3"
+}

@@ -1,0 +1,19 @@
+{
+ "fixture": "bbh.tex",
+ "cases": ["C13", "C15"],
+ "tables": [
+  {
+   "start_after": "\\begin{tabular}{ccc}",
+   "n_rows": 2, "n_cols": 3,
+   "rules": [[-1, "toprule"], [0, "midrule"], [1, "bottomrule"]],
+   "caption_prefix": "The average performance of various methods",
+   "label": "tab:baseline_compare",
+   "rows": [
+    ["LoRA Retrieval",
+     {"raw": "\\lorahub$_{\\rm avg}$", "text": "LoraHub_avg"},
+     {"raw": "\\lorahub$_{\\rm best}$", "text": "LoraHub_best"}],
+    [["31.7", 31.7], ["34.7", 34.7], ["41.2", 41.2]]
+   ]
+  }
+ ]
+}
