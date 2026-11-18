@@ -223,7 +223,8 @@ For each call, entries are tried in config order:
 | 200 + output validates | Done. |
 | 200 + output malformed (not JSON, fails schema) | One repair retry on the same entry, with the validation error appended. Then the next entry. |
 | 429 with wait ≤ `max_backoff_s` (`Retry-After`, `x-ratelimit-reset-*`, or Gemini `RetryInfo`) | Sleep that long (plus jitter) and retry the same entry, up to `max_retries_per_entry`. |
-| 429 with longer or unknown wait, or a body indicating a daily/quota cap | Mark the entry **exhausted until** its reset time (when given, else next UTC midnight). Next entry. |
+| 429 with a longer wait, or a body indicating a daily cap | Mark the entry **exhausted until** its reset time (when given, else next UTC midnight). Next entry. |
+| 429 with no wait hint at all | Exponential backoff (capped at `max_backoff_s`) up to `max_retries_per_entry`; if still 429, exhausted until next UTC midnight. Next entry. |
 | 5xx, timeout, connection error | Exponential backoff with jitter, then the next entry. |
 | 400 context-length error | Next entry. |
 | Other 4xx (401, 403, bad request) | Disable the entry for this process and log it. Next entry. |
@@ -247,6 +248,9 @@ headers. This pins down CLAUDE.md's `sha256(model_id + prompt + schema_version)`
   *every* entry of the role in order, and use the first hit. A cache hit **never** touches
   the transport (tested by a transport that fails the test if called).
 - Only successful, schema-valid responses are cached.
+- A response that needed the one repair retry is cached under the **original** request's
+  key, so a re-run hits it. Its request blob is `{"request": <original>, "sent": <the
+  repair request>}`, which keeps the repair visible.
 
 Ledger table (migration 0002, append-only):
 ```sql
