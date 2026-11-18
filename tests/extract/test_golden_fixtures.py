@@ -50,6 +50,22 @@ def test_cases_are_known(g):
     assert g.cases and set(g.cases) <= set(CASES)
 
 
+def test_coverage_report_is_current():
+    """COVERAGE.md is generated from the fixtures; a stale copy would misreport coverage."""
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).parents[2]
+    r = subprocess.run(
+        [sys.executable, "scripts/golden_report.py", "--check"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    assert r.returncode == 0, r.stdout
+
+
 def test_byte_check_catches_a_wrong_hand_written_value():
     """The mechanical check is not a tautology: a mistyped value or literal is caught."""
     import copy

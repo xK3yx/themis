@@ -404,6 +404,28 @@ or a `parse_failed` stage record with the reason.
 Every table is parsed. A mechanical score orders them, but **no table is dropped
 mechanically**. The LLM labelling step marks non-result tables, and that decision is recorded.
 
+### 5.5 Conventions the parser and the goldens share (added during implementation)
+- **Rows:** comment lines and rule-only lines are not rows. Rules are recorded as "after row
+  N" (−1 = above the first row). `\rowcolor` and `\arrayrulecolor` at a row start belong to
+  the row, not its first cell.
+- **Cells:** a cell is the trimmed text between separators; for `\multicolumn` /
+  `\multirow` it is the inner content. An empty source cell under a row span from above is
+  a placeholder (not an anchor). Captions are trimmed the same way.
+- **Numbers:** a cell has a number only if a literal **starts** it, after style wrappers or
+  a single whole-cell macro wrapper (`\revision{963}`), and is followed only by a ±, `\%`,
+  footnote marks, closing wrappers or a bracketed note. So `324.8 (nuclear norm)` → 324.8,
+  while `16$\times$1$\times$1`, `0.3M`, `3B` and `$12Ld^2+dV$` have no number. The literal
+  grammar is the one in `themis.numbers`, shared with ledger check V24.
+- **Bold:** `\textbf`, `\bf`, `\bfseries`, or `\mathbf`/`\boldsymbol` around the number
+  (so `$\mathbf{A}_k$` is notation, not emphasis).
+- **Header rows:** rows above the first full-width rule (`\midrule`, `\hline`,
+  `\specialrule`) below row 0; partial `\cline` / `\cmidrule` don't end the header.
+- **C20 (transposed tables)** has no parser behaviour: the LLM labels orientation (§6.3).
+- Golden fixtures are written in a compact row format; byte spans are located by in-order
+  search of the hand-written raw text (never by the parser), with a check that consecutive
+  cells are separated by real separators, and every literal re-parses to its hand-written
+  value. `tests/fixtures/latex/golden/COVERAGE.md` is generated and checked for staleness.
+
 ## 6. Claim extraction (`src/themis/extract/`)
 
 ### 6.1 Layered evidence
@@ -686,6 +708,16 @@ bodies, 5xx, timeouts and context-length errors, in any per-entry sequence. Test
 - Tar safety: traversal, absolute path, symlink, oversize → rejected; nothing written to disk.
 - Resumability (§7.2), and deleting `ops.db` changes nothing in the ledger (§3.6).
 - CI stays green on Windows and Linux. Network-marked tests are skipped in CI.
+
+### 10.7 Table parser status (2026-11-18)
+- Goldens: 14 real tables from 11 CC BY / CC BY-SA papers (35 licensed papers surveyed)
+  plus 3 labelled synthetic tables for C3, C6 and C19, the only cases no surveyed real
+  table contained. 595 hand-written cells. C17 is covered by a real table whose short row
+  is genuinely padded (a short row covered by a `\multirow` doesn't count).
+- The parser was built one case at a time, test-first, one commit per case.
+- Mutation check: 18/18 parser-handler mutants killed (C13 is the core, not a handler;
+  C20 has no behaviour). Provenance-check mutants (V7, V7b, V11, V24, validators) are
+  added with extraction.
 
 ## 11. Dependencies (approved 2026-11-18)
 
