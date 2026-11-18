@@ -4,7 +4,7 @@ import sqlite3
 
 import pytest
 
-from themis.ledger.db import MIN_SQLITE_VERSION, connect, tx
+from themis.ledger.db import LATEST_VERSION, MIN_SQLITE_VERSION, connect, tx
 from themis.ledger.errors import SchemaIntegrityError, SQLiteVersionError
 
 
@@ -25,7 +25,7 @@ def test_min_version_is_3_38():
 def test_connect_pragmas(conn):
     assert conn.execute("PRAGMA foreign_keys").fetchone()[0] == 1
     assert conn.execute("PRAGMA recursive_triggers").fetchone()[0] == 1
-    assert conn.execute("PRAGMA user_version").fetchone()[0] == 1
+    assert conn.execute("PRAGMA user_version").fetchone()[0] == LATEST_VERSION
 
 
 def test_fresh_install_creates_tables(conn):
@@ -83,3 +83,11 @@ def test_tx_nests(conn):
     with tx(conn), tx(conn):
         conn.execute("INSERT INTO blobs VALUES (?,?,?,?)", ("b" * 64, 1, "text/plain", "t"))
     assert conn.execute("SELECT count(*) FROM blobs").fetchone()[0] == 1
+
+
+def test_foreign_db_refused(db_path):
+    raw = sqlite3.connect(db_path)
+    raw.execute("CREATE TABLE something_else(x)")
+    raw.close()
+    with pytest.raises(SchemaIntegrityError, match="not a Themis ledger"):
+        connect(db_path)

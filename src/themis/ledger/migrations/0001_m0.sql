@@ -1,9 +1,8 @@
--- Themis ledger schema, user_version 1. See docs/m0-ledger.md.
+-- Migration 0001: M0 ledger schema. See docs/m0-ledger.md.
 -- Trigger messages start with the rule ID from the spec (V1..V20).
--- This file is the single source of truth: db.connect() compares the live schema
--- against a fresh install of it and refuses to open on any difference.
-
-BEGIN;
+-- Migrations are applied in order by db.connect() inside one transaction, which also sets
+-- user_version; db.connect() compares the live schema with a fresh install of all
+-- migrations and refuses to open on any difference. Migrations only ever CREATE.
 
 -- ------------------------------------------------------------------ tables
 
@@ -267,6 +266,3 @@ BEGIN
          WHERE n.id = NEW.src AND json_extract(n.provenance_json, '$.supersedes') = NEW.dst)));
 END;
 
-PRAGMA user_version = 1;
-
-COMMIT;
