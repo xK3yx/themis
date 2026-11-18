@@ -32,7 +32,7 @@ choose the option that makes Themis's reasoning more traceable.
 ## Runtime LLMs: free cloud tiers only
 
 - No paid APIs and no local LLMs at runtime. The local GPU is used only for experiments.
-- Code calls **roles**, never model names. `config/providers.yaml` maps each role to an
+- Code calls **roles**, never model names. `config/providers.toml` maps each role to an
   ordered list of provider/model fallbacks:
   - `extractor`: long-context model for reading papers
   - `reasoner`: hypotheses, conflict adjudication, report drafting
@@ -79,7 +79,7 @@ src/themis/
   experiments/  typed templates, run harness
   loop/         hypotheses, preregistration, next-step selection, critic
   report/       renderer with evidence contract
-config/         providers.yaml, entity seed list
+config/         providers.toml, search.toml, entity seed list
 docs/           one spec per milestone, decisions log
 evals/          settled-questions benchmark
 data/           ledger DB and blob store (gitignored)
