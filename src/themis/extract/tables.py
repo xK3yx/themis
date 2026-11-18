@@ -439,6 +439,46 @@ def _split_rows(doc: Doc, ctx: Ctx, pt: ParsedTable, start: int, end: int):
     return out
 
 
+def _unwrap(doc: Doc, cell: Cell, name: str, n_args_before: int, opts: bool) -> int | None:
+    """If the cell is exactly \\name[opt]{a1}..{content}, narrow it to content and return the
+    first argument as an int; otherwise None. Optional [..] args are skipped when `opts`."""
+    m = doc.masked
+    s, e = cell._start, cell._end
+    tok = "\\" + name
+    if not m.startswith(tok, s) or (s + len(tok) < e and m[s + len(tok)].isalpha()):
+        return None
+    j = s + len(tok)
+    first = None
+    for k in range(n_args_before):
+        j = _opt(m, j) if opts else j
+        j = _skip_ws(m, j)
+        g = _group(m, j)
+        if g == j:
+            return None
+        if k == 0:
+            first = doc.text[j + 1 : g - 1].strip()
+        j = g
+    j = _opt(m, j) if opts else j
+    j = _skip_ws(m, j)
+    g = _group(m, j)
+    if g == j or m[g:e].strip():
+        return None  # not a whole-cell wrapper
+    try:
+        n = int(first)
+    except (TypeError, ValueError):
+        return None
+    cell._start, cell._end = _trim(m, j + 1, g - 1)
+    return n
+
+
+@handler("C1")
+def _multicolumn(doc: Doc, cell: Cell) -> None:
+    """\\multicolumn{n}{spec}{content}: colspan n; the cell's span is the content."""
+    n = _unwrap(doc, cell, "multicolumn", 2, opts=False)
+    if n is not None and n >= 1:
+        cell.colspan = n
+
+
 def _trim(m: str, s: int, e: int) -> tuple[int, int]:
     while s < e and m[s] in " \t\r\n":
         s += 1
