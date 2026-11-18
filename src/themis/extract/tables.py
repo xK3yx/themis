@@ -515,6 +515,24 @@ def _image_table(doc: Doc, ctx: Ctx, f, caption, label) -> list[ParsedTable] | N
     )]
 
 
+_FULL_WIDTH_RULES = {"hline", "midrule", "specialrule", "bottomrule"}
+
+
+@handler("C4")
+def _header_paths(pt: ParsedTable) -> None:
+    """Header rows: those above the first full-width rule below row 0 (partial \\cline and
+    \\cmidrule don't end the header), else row 0. Each column's header path: the non-empty
+    header cells covering it, top to bottom (hierarchical headers via \\multicolumn)."""
+    ends = [after for after, kind in pt.rules if kind in _FULL_WIDTH_RULES and after >= 0]
+    last = min(ends) if ends else 0
+    pt.header_rows = list(range(min(last, pt.n_rows - 1) + 1)) if pt.n_rows else []
+    heads = sorted((c for c in pt.cells if c.row in pt.header_rows and c.raw),
+                   key=lambda c: (c.row, c.col))
+    pt.col_headers = [
+        [c.raw for c in heads if c.col <= col < c.col + c.colspan] for col in range(pt.n_cols)
+    ]
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
