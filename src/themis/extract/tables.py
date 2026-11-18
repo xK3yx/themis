@@ -451,6 +451,21 @@ def _environments(ctx: Ctx) -> None:
     ctx.float_envs |= {"table*", "sidewaystable", "sidewaystable*", "wraptable"}
 
 
+@handler("C17")
+def _pad_short_rows(pt: ParsedTable) -> None:
+    """A row shorter than the table, where nothing covers the gap, gets empty padding cells
+    (no span: they are not in the source) and a warning."""
+    covered = getattr(pt, "_covered", set())
+    added = []
+    for r in range(pt.n_rows):
+        for c in range(pt.n_cols):
+            if (r, c) not in covered:
+                added.append(Cell(row=r, col=c, pad=True, missing="empty"))
+    if added:
+        pt.warnings.append(f"padded {len(added)} cell(s) in short rows")
+        pt.cells = sorted(pt.cells + added, key=lambda x: (x.row, x.col))
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
