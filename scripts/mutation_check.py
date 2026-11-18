@@ -11,7 +11,9 @@ SQL mutants (all migrations): each RAISE neutralised, each trigger dropped, each
 constraint removed. Files are restored from their in-memory originals after every mutant,
 never via git, so uncommitted work is safe.
 
-Python mutants (provenance checks, parser cases) are added as those modules land.
+Handler mutants: each table-parser case handler (themis.extract.tables.HANDLERS) is
+replaced by a no-op via tests/mutation_plugin.py, and tests/extract must then fail.
+Provenance-check mutants (V7, V7b, V11, V24, label/regime validators) come with extraction.
 """
 
 import argparse
@@ -82,8 +84,25 @@ EQUIVALENT: dict[str, str] = {}
 @dataclass
 class Mutant:
     label: str
-    path: Path
-    text: str
+    path: Path | None = None  # SQL mutants: file to rewrite with `text`
+    text: str = ""
+    env: dict | None = None  # handler mutants: environment for tests/mutation_plugin.py
+    tests: tuple[str, ...] = ()  # test paths to run (default: the whole suite)
+
+
+def handler_mutants() -> list[Mutant]:
+    """One mutant per table-parser case handler (spec §10.3): the handler becomes a no-op."""
+    sys.path.insert(0, str(ROOT / "src"))
+    from themis.extract.tables import HANDLERS
+
+    return [
+        Mutant(
+            f"parser handler {case}",
+            env={"THEMIS_DISABLE_HANDLER": case},
+            tests=("-p", "tests.mutation_plugin", "tests/extract"),
+        )
+        for case in sorted(HANDLERS, key=lambda c: int(c[1:]))
+    ]
 
 
 def sql_mutants() -> list[Mutant]:
@@ -116,13 +135,19 @@ def sql_mutants() -> list[Mutant]:
     return out
 
 
-def run_suite() -> bool:
+def run_suite(m: Mutant) -> bool:
+    import os
+
+    env = {**os.environ, **(m.env or {})}
     r = subprocess.run(
-        [sys.executable, "-m", "pytest", "-x", "-q", "-p", "no:cacheprovider"],
+        [sys.executable, "-m", "pytest", "-x", "-q", "-p", "no:cacheprovider", *m.tests],
         cwd=ROOT,
         capture_output=True,
         text=True,
+        env=env,
     )
+    if r.returncode not in (0, 1):  # 1 = tests failed; anything else = the run itself broke
+        raise SystemExit(f"{m.label}: pytest exited {r.returncode}\n{r.stdout[-2000:]}")
     return r.returncode != 0
 
 
@@ -130,9 +155,15 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("-k", default="", help="only run mutants whose label contains this")
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--sql", action="store_true", help="only SQL mutants")
+    ap.add_argument("--handlers", action="store_true", help="only parser-handler mutants")
     args = ap.parse_args()
 
-    mutants = [m for m in sql_mutants() if args.k in m.label and m.label not in EQUIVALENT]
+    both = not (args.sql or args.handlers)
+    pool = (sql_mutants() if args.sql or both else []) + (
+        handler_mutants() if args.handlers or both else []
+    )
+    mutants = [m for m in pool if args.k in m.label and m.label not in EQUIVALENT]
     if args.list:
         for m in mutants:
             print(m.label)
@@ -141,12 +172,15 @@ def main() -> int:
 
     survivors = []
     for m in mutants:
-        original = m.path.read_text(encoding="utf-8")
-        try:
-            m.path.write_text(m.text, encoding="utf-8")
-            killed = run_suite()
-        finally:
-            m.path.write_text(original, encoding="utf-8")
+        if m.path is None:
+            killed = run_suite(m)
+        else:
+            original = m.path.read_text(encoding="utf-8")
+            try:
+                m.path.write_text(m.text, encoding="utf-8")
+                killed = run_suite(m)
+            finally:
+                m.path.write_text(original, encoding="utf-8")
         print(("killed  " if killed else "SURVIVED") + "  " + m.label, flush=True)
         if not killed:
             survivors.append(m.label)
