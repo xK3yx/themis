@@ -29,6 +29,7 @@ IMPLEMENTED = [
     "C6",
     "C7",
     "C11",
+    "C12",
 ]
 
 GOLDENS = load_goldens()

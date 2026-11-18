@@ -721,6 +721,29 @@ def _arrow(cell: Cell) -> None:
         cell.style["arrow"] = "down"
 
 
+_MARK = re.compile(
+    r"\\(?P<name>dagger|ddagger|diamond|star|ast|S|P)(?![A-Za-z])"
+    r"|\^\s*\{?\s*(?P<star>\*)"
+    r"|\\textsuperscript\s*\{(?P<sup>[^}]*)\}"
+    rf"|(?P<uni>[{chr(0x2020)}{chr(0x2021)}])"
+)
+_MARK_NAMES = {"ast": "*", chr(0x2020): "dagger", chr(0x2021): "ddagger"}
+
+
+@handler("C12")
+def _footnote_marks(cell: Cell) -> None:
+    """Footnote marks ($^\\dagger$, $^*$, \\textsuperscript{*}, a dagger character), by name in
+    source order. They are never part of the cell's number."""
+    names: list[str] = []
+    for m in _MARK.finditer(cell.raw):
+        name = m.group("name") or m.group("star") or m.group("sup") or m.group("uni")
+        name = _MARK_NAMES.get(name, name).strip()
+        if name and name not in names:
+            names.append(name)
+    if names:
+        cell.style["marks"] = names
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
