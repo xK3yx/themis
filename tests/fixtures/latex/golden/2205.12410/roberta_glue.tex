@@ -1,0 +1,31 @@
+\begin{table*}[!t]
+%\vspace{-0.1in}
+\small
+
+	\begin{center}
+	\resizebox{1.0\linewidth}{!}{
+		\begin{tabular}{lr c cccccc  c c}
+			\toprule \bf Model &   \#Param. &MNLI        &QNLI               &SST2          &QQP          &MRPC               &CoLA           &RTE        &STS-B&\bf Avg. \\ 
+			                           &&Acc             &Acc             &Acc          &Acc            &Acc             &Mcc            &Acc            &Pearson    \\ \midrule
+			%%\midrule
+			Full Fine-tuning$^\dagger{}$ &355.0M&90.2&94.7&96.4& 92.2&90.9&68.0&86.6&\textbf{92.4}&88.9 \\ \midrule
+			Pfeiffer Adapter$^\dagger{}$&3.0M &90.2&94.8&96.1&91.9&90.2&68.3&83.8&92.1 &88.4 \\ %\midrule
+			Pfeiffer Adapter$^\dagger{}$&0.8M &90.5&94.8&96.6&91.7&89.7&67.8&80.1&91.9&87.9  \\ %\midrule
+			Houlsby Adapter$^\dagger{}$&6.0M&89.9&94.7&96.2&92.1&88.7&66.5&83.4&91.0& 87.8  \\ %\midrule
+			Houlsby Adapter$^\dagger{}$&0.8M&90.3&94.7&96.3&91.5&87.7&66.3&72.9&91.5&86.4  \\ %\midrule
+			LoRA$^\dagger{}$&0.8M&90.6&94.8&96.2&91.6&90.2&68.2&85.2&92.3 &88.6 \\ %\midrule
+			{\sysname} Adapter &0.8M &\textbf{90.9}&\textbf{95.4}&\textbf{97.1}&\textbf{92.3}&\textbf{91.9}&\textbf{70.2}&\textbf{89.2}&\textbf{92.4} &\textbf{89.9}\\
+% 			& &\textbf{}&\textbf{}&\textbf{}&\textbf{89.8}&\textbf{94.1}&\textbf{}&\textbf{}&\textbf{} &\textbf{}\\ 
+			\bottomrule
+			
+	
+        
+		\end{tabular}}
+	\end{center}
+
+	\caption{Results for NLU tasks on GLUE development set with \textbf{RoBERTa-large} encoder. The best result on each task is in \textbf{bold} and ``-'' denotes missing measure. {\sysname} with a mixture of adapters outperforms all competing methods as well as fully fine-tuned large model with only $0.23\%$ tunable parameters.$^\dagger{}$~denotes results reported from \cite{hu2021lora}. Mcc refers to Matthews correlation coefficient, and Pearson refers to Pearson correlation. %Overall average performance is computed based on accuracy of QQP and MRPC.
+	\#Param. denotes the number of tunable adaptation parameters used during inference.}
+	\label{tab:roberta_glue_dev}
+%\lgspace
+
+\end{table*}

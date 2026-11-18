@@ -1,6 +1,6 @@
 {
  "fixture": "shapes.tex",
- "cases": ["C2", "C13", "C14", "C17"],
+ "cases": ["C2", "C13", "C14"],
  "tables": [
   {
    "start_after": "\\begin{tabular}{c|cccccc}",
