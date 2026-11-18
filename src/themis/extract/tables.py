@@ -707,6 +707,20 @@ def _colour(cell: Cell) -> None:
         cell.style["color"] = color
 
 
+_UP = re.compile(r"\\uparrow(?![A-Za-z])|\\Uparrow(?![A-Za-z])|" + chr(0x2191))
+_DOWN = re.compile(r"\\downarrow(?![A-Za-z])|\\Downarrow(?![A-Za-z])|" + chr(0x2193))
+
+
+@handler("C11")
+def _arrow(cell: Cell) -> None:
+    """A direction arrow (usually in a header): a hint for whether higher or lower is better."""
+    up, down = _UP.search(cell.raw), _DOWN.search(cell.raw)
+    if up and (not down or up.start() < down.start()):
+        cell.style["arrow"] = "up"
+    elif down:
+        cell.style["arrow"] = "down"
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
