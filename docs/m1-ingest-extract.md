@@ -1,7 +1,6 @@
 # M1: Router, ingest, table parsing, claim extraction
 
-Status: **draft v2, awaiting approval**. Revised 2026-11-18 with the answers in §12.
-No code is written until this spec is approved.
+Status: **approved 2026-11-18** (decisions in §12). Implementation in progress.
 
 ## 1. Goal and "done when"
 
@@ -538,9 +537,13 @@ excluded from parser golden fixtures (§10.2) and recorded LLM fixtures (§10.1)
    and whether averaged columns ("Avg.") are claims (proposed: yes).
 4. A second pass a day later on 1 table per paper estimates label noise. A field with
    self-agreement < 95% gets its definition fixed before scoring.
-5. Gold files and `evals/m1/README.md` (field definitions, which I draft for you to edit)
-   are committed. Held-back gold can be committed encrypted or kept outside the repo until
-   the final measurement (Q-B in §13).
+5. `evals/m1/README.md` (field definitions, which I draft for you to edit) is committed.
+   **Tuning gold** lives in `evals/m1/gold/`. **Held-back gold** lives outside the repo
+   folder entirely, at `C:\dev\themis-gold\` (not merely gitignored). `themis eval` reads
+   the held-back directory from the `THEMIS_GOLD_DIR` environment variable. Nothing in
+   the code, the tests or the tuning workflow reads, lists or opens it, except the final
+   held-back measurement, run when you ask for it. The held-back gold is committed only
+   after that final M1 measurement is recorded. No encryption.
 
 ### 8.3 Scoring
 - **Matching:** each gold claim is matched to at most one predicted claim from the same table
@@ -607,8 +610,20 @@ Router, ledger and provenance code is **test-first**, as for M0.
   expected file needs a commit message explaining why.
 - **Coverage test:** every case C1–C20 is tagged on at least one real-table golden. The test
   fails if a case has none.
-- Licensing: see Q-A in §13. Synthetic fixtures (`latex/synthetic/`) are allowed *in addition*
-  for edge cases, never instead of a real golden.
+- **Licensing:** committed golden fixtures come only from papers whose arXiv licence is
+  CC BY, CC BY-SA or CC0. The licence is read from arXiv metadata, and the licence URL plus
+  the metadata response are recorded in the fixture's metadata. A test fails if any committed
+  fixture lacks an allowed licence. The 5 eval papers are never committed; they are fetched
+  by pinned version and cached locally. If 10 permissively licensed LoRA-family papers
+  can't cover all 20 cases, work stops and you're told, rather than the rule being relaxed.
+- **Safeguards (the same model writes the parser and the goldens):**
+  - A mechanical check, independent of the parser: for every golden cell, the bytes at its
+    span in the fixture file must decode to text containing that cell's expected raw text,
+    and its number literal span must re-parse to the expected value.
+  - You spot-check 3 complete tables, chosen by a committed seeded random script
+    (`scripts/pick_spot_check.py`), not by hand. The seed and the picks are shown to you.
+- Synthetic fixtures (`latex/synthetic/`) are allowed *in addition* for edge cases, never
+  instead of a real golden.
 
 ### 10.3 Mutation check (`scripts/mutation_check.py`, committed)
 The M0 check, generalised and committed:
@@ -678,20 +693,14 @@ bottleneck), `respx`, `rapidfuzz`, `numpy`.
 9. Quota events in a separate `data/ops.db`; the LLM cache stays in the ledger.
 10. Result values from tables only in M1; prose is used only for regime details.
 
-## 13. Open questions (new, raised by the decisions above)
+11. Golden fixtures: CC BY / CC BY-SA / CC0 papers only, licence checked from arXiv metadata,
+    recorded, and enforced by a test. Eval papers are never committed. If 10 such papers can't
+    cover all 20 cases, stop and report.
+12. Held-back gold lives in `C:\dev\themis-gold\`, outside the repo, read only via
+    `THEMIS_GOLD_DIR` by the final measurement. Committed only after that measurement.
+13. I write golden expected files by hand before the parser handles each case. They are
+    guarded by a mechanical byte check and your spot-check of 3 seeded-random tables.
 
-- **Q-A. Licensing of golden fixtures.** The golden tests commit real LaTeX table snippets
-  from ≥ 10 papers. Many arXiv papers carry arXiv's default non-exclusive licence, which
-  grants arXiv, not us, the right to distribute them. Proposal: choose golden papers whose
-  arXiv licence is CC BY, CC BY-SA or CC0 (recorded in metadata, and asserted by a test), and
-  keep snippets to the table environment plus caption. If those can't cover all 20 cases, the
-  fallback is to keep the snippets out of git and have tests fetch them by pinned sha256 into a
-  gitignored cache. But that makes CI depend on arXiv being reachable, which conflicts with
-  "never call live APIs". Which do you prefer?
-- **Q-B. Keeping the held-back gold blind.** Committing held-back gold to the repo puts it in
-  front of anyone (me included) who later tunes prompts. Options: keep it out of the repo
-  until the final measurement, or commit it encrypted. Or is commit-in-the-clear fine,
-  given you control when it's opened?
-- **Q-C. Who writes the golden expected files?** I can write them by hand from the LaTeX before
-  the parser handles each case, which is test-first. You'd spot-check a sample. Is that
-  acceptable, or do you want to write or review all of them?
+## 13. Open questions
+
+None outstanding. New questions go to the decisions log as they arise.
