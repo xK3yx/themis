@@ -619,6 +619,29 @@ def _plus_minus(raw: str, j: int):
     return None
 
 
+_BOLD = re.compile(r"\\textbf\s*\{|\\bf(?![A-Za-z])|\\bfseries(?![A-Za-z])")
+_MATH_BOLD = re.compile(r"\\(?:mathbf|boldsymbol)\s*\{\s*$")
+_ITALIC = re.compile(r"\\textit\s*\{|\\it(?![A-Za-z])|\\itshape(?![A-Za-z])|\\emph\s*\{")
+_UNDERLINE = re.compile(r"\\(?:underline|uline)\s*\{")
+
+
+@handler("C5")
+def _emphasis(cell: Cell) -> None:
+    """Bold (best result), italic, underline. \\mathbf/\\boldsymbol count only around the
+    cell's number: $\\mathbf{A}_k$ is notation, not emphasis."""
+    raw = cell.raw
+    if _BOLD.search(raw):
+        cell.style["bold"] = True
+    elif cell.number is not None:
+        before = raw[: max(raw.find(cell.number.span.text), 0)]  # chars, not bytes
+        if _MATH_BOLD.search(before):
+            cell.style["bold"] = True
+    if _ITALIC.search(raw):
+        cell.style["italic"] = True
+    if _UNDERLINE.search(raw):
+        cell.style["underline"] = True
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""

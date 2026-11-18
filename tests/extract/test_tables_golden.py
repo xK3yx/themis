@@ -11,7 +11,22 @@ import pytest
 from tests.extract.golden import CASES, Golden, load_goldens
 from themis.extract import tables as T
 
-IMPLEMENTED = ["C13", "C1", "C2", "C3", "C14", "C17", "C18", "C19", "C20", "C4", "C9", "C10", "C8"]
+IMPLEMENTED = [
+    "C13",  # core: rows, cells, rules, placement
+    "C1",
+    "C2",
+    "C3",
+    "C14",
+    "C17",
+    "C18",
+    "C19",
+    "C20",  # no parser behaviour; checked by the full comparison
+    "C4",
+    "C9",
+    "C10",
+    "C8",
+    "C5",
+]
 
 GOLDENS = load_goldens()
 STRUCTURAL = {"C1", "C2", "C3", "C14", "C17", "C18", "C19"}
