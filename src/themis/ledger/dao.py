@@ -23,6 +23,7 @@ from themis.ledger.errors import (
 from themis.ledger.models import (
     DerivedNode,
     Observation,
+    Span,
     StoredNode,
     TableCell,
     hashable,
@@ -30,6 +31,9 @@ from themis.ledger.models import (
     parse_node,
     provenance_dict,
 )
+from themis.numbers import parse_literal
+
+CLAIM_RULE = "table_result"  # derived nodes with this rule are claims (M1 spec §2.5)
 
 
 def _canonical_text(value: Any, what: str) -> str:
@@ -215,6 +219,7 @@ class Ledger:
                     raise ValidationError(
                         f"V7b: source bytes [{cell.start}:{cell.end}] do not match the cell text"
                     )
+            self._check_atom_numbers(node.content, p.locator, data)
         elif node.kind == "measured":
             row = self.conn.execute(
                 "SELECT n_seeds, seeds_json, results_blob FROM runs WHERE id = ?", (p.run,)
@@ -243,6 +248,8 @@ class Ledger:
                         f"V14: derived parent {parent} is superseded by {succ};"
                         " derive from the current node instead"
                     )
+            if p.rule == CLAIM_RULE:
+                self._check_claim(node.content, set(p.parents))
         if p.supersedes is not None:
             if not self._exists(p.supersedes):
                 raise ValidationError(f"V15: supersedes target {p.supersedes} does not exist")
@@ -251,6 +258,129 @@ class Ledger:
                 raise ValidationError(
                     f"V15: {p.supersedes} is already superseded by {succ}; supersede {succ} instead"
                 )
+
+    # ------------------------------------------------------------ claim provenance (§2.5)
+
+    @staticmethod
+    def _check_literal(
+        data: bytes, outer: Span, number: dict, value_key: str, span_key: str, what: str
+    ) -> None:
+        """V24: number[span_key] lies inside `outer`, matches the blob bytes, and its text
+        parses to exactly number[value_key]."""
+        value = number.get(value_key)
+        if type(value) not in (int, float):
+            raise ValidationError(f"V24: {what} {value_key} is not a number: {value!r}")
+        sp = number.get(span_key)
+        if not isinstance(sp, dict):
+            raise ValidationError(f"V24: {what} {value_key} has no literal span ({span_key})")
+        start, end, text = sp.get("start"), sp.get("end"), sp.get("text")
+        if type(start) is not int or type(end) is not int or not isinstance(text, str):
+            raise ValidationError(f"V24: {what} {span_key} is malformed: {sp!r}")
+        if not (outer.start <= start < end <= outer.end):
+            raise ValidationError(
+                f"V24: {what} literal [{start}:{end}] lies outside its evidence span "
+                f"[{outer.start}:{outer.end}]"
+            )
+        if data[start:end] != text.encode("utf-8"):
+            raise ValidationError(f"V24: {what} literal bytes [{start}:{end}] != {text!r}")
+        parsed = parse_literal(text)
+        if parsed is None or parsed != value:
+            raise ValidationError(
+                f"V24: {what} literal {text!r} parses to {parsed!r}, not {value!r}"
+            )
+
+    def _check_atom_numbers(self, content: dict, locator: Any, data: bytes) -> None:
+        """V24 for an atom: its recorded number(s) re-parse from bytes inside its evidence."""
+        if "number" not in content or content["number"] is None:
+            return
+        number = content["number"]
+        if not isinstance(number, dict):
+            raise ValidationError("V24: atom number must be an object or null")
+        outer = locator.cell if isinstance(locator, TableCell) else locator
+        self._check_literal(data, outer, number, "value", "span", "atom")
+        if number.get("pm") is not None:
+            self._check_literal(data, outer, number, "pm", "pm_span", "atom")
+
+    def _atom_evidence(self, atom_id: str) -> tuple[StoredNode, bytes]:
+        atom = self.get(atom_id)
+        if atom.kind != "cited":
+            raise ValidationError(f"V24: {atom_id} is a {atom.kind} node, not a cited atom")
+        blob = self.conn.execute(
+            "SELECT blob_sha256 FROM sources WHERE id = ?", (atom.node.provenance.source,)
+        ).fetchone()[0]
+        return atom, self.blobs.get(blob)
+
+    def _check_claim(self, content: dict, parents: set[str]) -> None:
+        """V21-V24 for a `table_result` claim. The DB re-checks V21-V23 (migration 0003)."""
+        refs: list[tuple[str, Any]] = []
+
+        def walk(obj: Any, path: str) -> None:
+            if isinstance(obj, dict):
+                for k, v in obj.items():
+                    if k == "from" or k.endswith("_from"):
+                        refs.append((f"{path}.{k}", v))
+                    walk(v, f"{path}.{k}")
+            elif isinstance(obj, list):
+                for i, v in enumerate(obj):
+                    walk(v, f"{path}[{i}]")
+
+        walk(content, "$")
+        for path, ref in refs:
+            if not isinstance(ref, str) or ref not in parents:
+                raise ValidationError(f"V21: {path} = {ref!r} is not one of the claim's parents")
+
+        value = content.get("value")
+        if not isinstance(value, dict) or not isinstance(value.get("from"), str):
+            raise ValidationError("V22: claim value must name the table cell it comes from")
+        cell = self.get(value["from"])
+        if cell.kind != "cited" or not isinstance(cell.node.provenance.locator, TableCell):
+            raise ValidationError(
+                f"V22: claim value comes from {value['from']}, which is not a cited table cell"
+            )
+        cell_number = cell.node.content.get("number") or {}
+        if (
+            type(value.get("number")) not in (int, float)
+            or value.get("number") != cell_number.get("value")
+            or value.get("pm") != cell_number.get("pm")
+        ):
+            raise ValidationError(
+                f"V23: claim value {value.get('number')!r} ± {value.get('pm')!r} != cell "
+                f"number {cell_number.get('value')!r} ± {cell_number.get('pm')!r}"
+            )
+
+        # V24: every number in the claim re-parses from the bytes of the atom it names.
+        def numbers(obj: Any) -> None:
+            if isinstance(obj, dict):
+                if isinstance(obj.get("from"), str):
+                    for key, atom_key, span_key in (
+                        ("number", "value", "span"),
+                        ("value", "value", "span"),
+                        ("pm", "pm", "pm_span"),
+                    ):
+                        v = obj.get(key)
+                        if type(v) in (int, float):
+                            self._check_claim_number(v, obj["from"], atom_key, span_key)
+                for v in obj.values():
+                    numbers(v)
+            elif isinstance(obj, list):
+                for v in obj:
+                    numbers(v)
+
+        numbers(content)
+
+    def _check_claim_number(
+        self, v: int | float, atom_id: str, atom_key: str, span_key: str
+    ) -> None:
+        atom, data = self._atom_evidence(atom_id)
+        number = atom.node.content.get("number")
+        if not isinstance(number, dict) or number.get(atom_key) != v:
+            have = number.get(atom_key) if isinstance(number, dict) else None
+            raise ValidationError(
+                f"V24: claim number {v!r} does not match atom {atom_id}'s {atom_key} {have!r}"
+            )
+        loc = atom.node.provenance.locator
+        outer = loc.cell if isinstance(loc, TableCell) else loc
+        self._check_literal(data, outer, number, atom_key, span_key, f"atom {atom_id}")
 
     def _observe(self, nid: str, producer: dict) -> None:
         psha = content_hash(producer)
