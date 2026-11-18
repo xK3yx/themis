@@ -502,6 +502,19 @@ def _input_tables(doc: Doc, ctx: Ctx, f, caption, label) -> list[ParsedTable] | 
     return out or None
 
 
+@handler("C19")
+def _image_table(doc: Doc, ctx: Ctx, f, caption, label) -> list[ParsedTable] | None:
+    """A table float holding only an image: recorded with zero cells and a warning, so the
+    pipeline can skip it explicitly instead of losing it."""
+    if "\\includegraphics" not in doc.masked[f[1] : f[2]]:
+        return None
+    return [ParsedTable(
+        source_path=doc.path, tabular_path=doc.path, env="image", colspec="",
+        table_span=doc.span(f[0], f[3]), tabular_span=None, caption=caption, label=label,
+        n_rows=0, n_cols=0, rules=[], cells=[], image_table=True, warnings=["image_table"],
+    )]
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
