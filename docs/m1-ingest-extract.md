@@ -711,8 +711,10 @@ bottleneck), `respx`, `rapidfuzz`, `numpy`.
 10. Result values from tables only in M1; prose is used only for regime details.
 
 11. Golden fixtures: CC BY / CC BY-SA / CC0 papers only, licence checked from arXiv metadata,
-    recorded, and enforced by a test. Eval papers are never committed. If 10 such papers can't
-    cover all 20 cases, stop and report.
+    recorded, and enforced by a test. Eval papers are never committed. Prefer LoRA-family
+    papers; widen to other ML papers with results tables if needed. *(Revised 2026-11-18:)*
+    cases no real licensed table covers may use small synthetic tables, clearly labelled
+    synthetic in the fixture and the coverage report; real tables stay the majority.
 12. Held-back gold lives in `C:\dev\themis-gold\`, outside the repo, read only via
     `THEMIS_GOLD_DIR` by the final measurement. Committed only after that measurement.
 13. I write golden expected files by hand before the parser handles each case. They are
