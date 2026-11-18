@@ -128,12 +128,23 @@ class Sources(_Strict):
     semantic_scholar: SemanticScholarSource
 
 
+class IngestLimits(_Strict):
+    """Caps for unpacking untrusted arXiv e-prints in memory (spec §4.3)."""
+
+    max_download_bytes: Annotated[int, Field(gt=0)] = 100_000_000
+    max_members: Annotated[int, Field(gt=0)] = 2_000
+    max_total_bytes: Annotated[int, Field(gt=0)] = 200_000_000
+    max_file_bytes: Annotated[int, Field(gt=0)] = 20_000_000
+    keep_suffixes: list[str] = [".tex", ".bbl", ".sty", ".cls", ".bib"]
+
+
 class _File(_Strict):
     defaults: Defaults
     network: Network
     providers: dict[str, Provider]
     roles: dict[str, list[RoleEntry]]
     sources: Sources
+    ingest: IngestLimits = IngestLimits()
 
 
 class Config:
@@ -145,6 +156,7 @@ class Config:
         self.providers = raw.providers
         self.roles = raw.roles
         self.sources = raw.sources
+        self.ingest = raw.ingest
         self._enabled = enabled
         self.warnings = warnings
 

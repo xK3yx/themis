@@ -105,3 +105,12 @@ mailto_env = "OPENALEX_MAILTO"
 [sources.semantic_scholar]  # not used in M1; slot kept for later
 enabled = false
 key_env = "SEMANTIC_SCHOLAR_API_KEY"
+
+# ---------------------------------------------------------------- ingest limits
+
+[ingest]                    # caps for unpacking untrusted e-prints, in memory only
+max_download_bytes = 100000000
+max_members = 2000
+max_total_bytes = 200000000
+max_file_bytes = 20000000
+keep_suffixes = [".tex", ".bbl", ".sty", ".cls", ".bib"]
