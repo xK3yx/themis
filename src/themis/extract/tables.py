@@ -479,6 +479,15 @@ def _multicolumn(doc: Doc, cell: Cell) -> None:
         cell.colspan = n
 
 
+@handler("C2")
+def _multirow(doc: Doc, cell: Cell) -> None:
+    """\\multirow[pos]{n}[bigstruts]{width}[fixup]{content}: rowspan |n|; span = content.
+    A negative n spans upward in LaTeX; it is recorded as rowspan |n| from this row."""
+    n = _unwrap(doc, cell, "multirow", 2, opts=True)
+    if n is not None and n != 0:
+        cell.rowspan = abs(n)
+
+
 def _trim(m: str, s: int, e: int) -> tuple[int, int]:
     while s < e and m[s] in " \t\r\n":
         s += 1
