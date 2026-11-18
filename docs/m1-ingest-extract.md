@@ -48,7 +48,9 @@ a migration path:
   stricter one. A test asserts no migration contains `DROP TABLE`, `ALTER ... DROP` or
   `DELETE`.
 - Every new ledger table gets the same append-only triggers as M0 (no UPDATE / DELETE /
-  overwrite), generated from one template so none can be forgotten.
+  overwrite), named `<table>_no_update` / `_no_delete` / `_no_overwrite`. They're written out
+  in SQL; a test reads every table from a fresh install and fails if any lacks the three, and
+  the update/delete tests parametrise over that same live list, so none can be forgotten.
 
 ### 2.2 Transactions serialise check-then-insert
 M0's idempotency is "look up, then insert". Two writers could both see "absent" and race;
@@ -480,12 +482,15 @@ or not at all. LLM calls happen *before* the write transaction and are cached as
 return, so a crash after a call costs no quota on re-run.
 
 ```sql
-stage_records(stage, input_key, version, status CHECK IN ('done','skipped','failed'),
+stage_records(stage, input_key, version, attempt, status CHECK IN ('done','skipped','failed'),
               output_ref, detail_json, created_at,
-              PRIMARY KEY (stage, input_key, version))   -- ledger, append-only
+              PRIMARY KEY (stage, input_key, version, attempt))   -- ledger, append-only
 ```
-- `done` / `skipped` are never retried. `failed` is retried only with `--retry-failed` or
-  when the stage `version` bumps.
+- An item's status is its highest attempt. Attempts start at 1 and are consecutive, and a
+  new attempt is allowed only after a `failed` one (**V25**, DB trigger). So `done` and
+  `skipped` are final, and a retry appends a row instead of overwriting one.
+- `failed` is retried only with `--retry-failed` or when the stage `version` bumps (a new
+  version starts again at attempt 1).
 - **Quota exhaustion writes no record.** The item stays pending.
 
 ### 7.2 Quota stop

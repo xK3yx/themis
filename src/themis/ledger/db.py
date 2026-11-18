@@ -54,12 +54,14 @@ def _check_sqlite_version() -> None:
         )
 
 
-def _apply(conn: sqlite3.Connection, migration: Migration) -> None:
-    """Apply one migration and bump user_version, atomically."""
+def _apply(conn: sqlite3.Connection, migrations: tuple[Migration, ...]) -> None:
+    """Apply migrations and set user_version in ONE transaction: all or nothing."""
+    if not migrations:
+        return
     script = (
         "BEGIN IMMEDIATE;\n"
-        + migration.sql
-        + f"\nPRAGMA user_version = {migration.number};\nCOMMIT;\n"
+        + "\n".join(m.sql for m in migrations)
+        + f"\nPRAGMA user_version = {migrations[-1].number};\nCOMMIT;\n"
     )
     try:
         conn.executescript(script)
@@ -82,8 +84,7 @@ def _expected_objects(upto: int | None = None) -> dict[str, tuple[str, str]]:
     upto = LATEST_VERSION if upto is None else upto
     ref = sqlite3.connect(":memory:", isolation_level=None)
     try:
-        for mig in MIGRATIONS[:upto]:
-            _apply(ref, mig)
+        _apply(ref, MIGRATIONS[:upto])
         return _schema_objects(ref)
     finally:
         ref.close()
@@ -128,8 +129,7 @@ def connect(path: Path | str, busy_timeout_ms: int = DEFAULT_BUSY_TIMEOUT_MS) ->
             )
         else:
             _check_integrity(conn, version)  # never upgrade a tampered database
-        for mig in MIGRATIONS[version:]:
-            _apply(conn, mig)
+        _apply(conn, MIGRATIONS[version:])
         _check_integrity(conn, LATEST_VERSION)
     except BaseException:
         conn.close()

@@ -24,6 +24,7 @@ from themis.ledger.models import (
     DerivedNode,
     Observation,
     StoredNode,
+    TableCell,
     hashable,
     node_id,
     parse_node,
@@ -208,6 +209,12 @@ class Ledger:
                 raise ValidationError(
                     f"V7: source bytes [{span.start}:{span.end}] do not match the span text"
                 )
+            if isinstance(p.locator, TableCell):
+                cell = p.locator.cell
+                if data[cell.start : cell.end] != cell.text.encode("utf-8"):
+                    raise ValidationError(
+                        f"V7b: source bytes [{cell.start}:{cell.end}] do not match the cell text"
+                    )
         elif node.kind == "measured":
             row = self.conn.execute(
                 "SELECT n_seeds, seeds_json, results_blob FROM runs WHERE id = ?", (p.run,)

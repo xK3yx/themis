@@ -48,10 +48,25 @@ class Span(_Model):
 
 
 class TableCell(_Model):
+    """A table cell: the table's span, the cell's own span inside it, and grid coordinates.
+
+    The cell span makes provenance checkable without trusting the parser's grid.
+    """
+
     type: Literal["table_cell"] = "table_cell"
     table: Span
+    cell: Span
     row: Annotated[int, Field(ge=0)]
     col: Annotated[int, Field(ge=0)]
+
+    @model_validator(mode="after")
+    def _cell_inside_table(self) -> "TableCell":
+        if not (self.table.start <= self.cell.start and self.cell.end <= self.table.end):
+            raise ValueError(
+                f"V5b: cell span [{self.cell.start}:{self.cell.end}] is not inside the table "
+                f"span [{self.table.start}:{self.table.end}]"
+            )
+        return self
 
     @property
     def span(self) -> Span:

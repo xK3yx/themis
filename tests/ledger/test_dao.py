@@ -125,18 +125,55 @@ def test_span_character_offsets_rejected(ledger, src):
         add(ledger, node)
 
 
-def test_table_cell(ledger, src):
-    table_text = "\\begin{tabular}{lc} Method & Acc \\\\ LoRA & 71.2 \\end{tabular}"
+TABLE_TEXT = "\\begin{tabular}{lc} Method & Acc \\\\ LoRA & 71.2 \\end{tabular}"
+
+
+def _cell_node(src, cell_text="71.2", occurrence_in_table=True):
+    table = span_of(TABLE_TEXT)
+    start = PAPER.index(cell_text.encode(), table["start"] if occurrence_in_table else 0)
+    cell = {
+        "type": "span",
+        "start": start,
+        "end": start + len(cell_text.encode()),
+        "text": cell_text,
+    }
     node = cited(src)
     node["provenance"]["locator"] = {
         "type": "table_cell",
-        "table": span_of(table_text),
+        "table": table,
+        "cell": cell,
         "row": 1,
         "col": 1,
     }
+    return node
+
+
+def test_table_cell(ledger, src):
+    node = _cell_node(src)
     add(ledger, node)
     node["provenance"]["locator"]["row"] = -1
     with pytest.raises(ValidationError):
+        add(ledger, node)
+
+
+def test_table_cell_requires_cell(ledger, src):
+    node = _cell_node(src)
+    del node["provenance"]["locator"]["cell"]
+    with pytest.raises(ValidationError):
+        add(ledger, node)
+
+
+def test_table_cell_span_outside_table(ledger, src):
+    # "71.2" also appears in the prose before the table: right bytes, wrong place.
+    node = _cell_node(src, occurrence_in_table=False)
+    with pytest.raises(ValidationError, match="V5b"):
+        add(ledger, node)
+
+
+def test_table_cell_bytes_must_match(ledger, src):
+    node = _cell_node(src)
+    node["provenance"]["locator"]["cell"]["text"] = "71.3"  # same length, wrong bytes
+    with pytest.raises(ValidationError, match="V7b"):
         add(ledger, node)
 
 
