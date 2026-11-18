@@ -1,0 +1,107 @@
+# Themis providers and roles. See docs/m1-ingest-extract.md §3.1.
+#
+# Code calls roles, never model names. Each role lists provider/model fallbacks in order.
+# Model IDs live only here; keys live only in .env (named by key_env). Free tiers and free
+# model lists change often: fill in current model IDs before a live run. An entry whose
+# model is still a <placeholder>, or whose key is blank, is disabled with a warning.
+#
+# `family` is declared by hand (model IDs don't reliably encode it). The critic's families
+# must not appear anywhere in the reasoner's list, across every entry.
+
+[defaults]
+temperature = 0
+timeout_s = 120
+max_backoff_s = 60          # a 429 asking to wait longer than this moves to the next entry
+max_retries_per_entry = 3
+busy_timeout_ms = 5000
+max_concurrency = 4
+
+[network]
+allowed_hosts = [           # outbound allowlist; every request is checked against it
+  "generativelanguage.googleapis.com",
+  "api.groq.com",
+  "openrouter.ai",
+  "api.jina.ai",
+  "router.huggingface.co",
+  "export.arxiv.org",
+  "arxiv.org",
+  "api.openalex.org",
+]
+
+[providers.gemini]
+base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
+key_env = "GEMINI_API_KEY"
+
+[providers.groq]
+base_url = "https://api.groq.com/openai/v1/"
+key_env = "GROQ_API_KEY"
+
+[providers.openrouter]
+base_url = "https://openrouter.ai/api/v1/"
+key_env = "OPENROUTER_API_KEY"
+
+[providers.jina]
+base_url = "https://api.jina.ai/v1/"
+key_env = "JINA_API_KEY"
+
+[providers.hf]
+base_url = "https://router.huggingface.co/v1/"
+key_env = "HF_TOKEN"
+
+# ---------------------------------------------------------------- roles
+
+[[roles.extractor]]
+provider = "gemini"
+model = "<long-context gemini model id>"
+family = "gemini"
+context = 1000000
+
+[[roles.extractor]]
+provider = "openrouter"
+model = "<free long-context model id>"
+family = "qwen"
+context = 131072
+
+[[roles.reasoner]]
+provider = "gemini"
+model = "<gemini model id>"
+family = "gemini"
+
+[[roles.reasoner]]
+provider = "openrouter"
+model = "<free model id>"
+family = "deepseek"
+
+[[roles.critic]]
+provider = "groq"
+model = "<llama model id>"
+family = "llama"
+
+[[roles.critic]]
+provider = "openrouter"
+model = "<free model id>"
+family = "mistral"
+
+[[roles.embedder]]
+provider = "jina"
+model = "<jina embedding model id>"
+family = "jina"
+dims = 1024
+
+[[roles.embedder]]
+provider = "hf"
+model = "<embedding model id>"
+family = "bge"
+dims = 1024
+
+# ---------------------------------------------------------------- sources
+
+[sources.arxiv]
+min_interval_s = 3          # arXiv asks for at most one request every 3 seconds
+
+[sources.openalex]
+mailto_env = "OPENALEX_MAILTO"
+
+[sources.semantic_scholar]  # not used in M1; slot kept for later
+enabled = false
+key_env = "SEMANTIC_SCHOLAR_API_KEY"
