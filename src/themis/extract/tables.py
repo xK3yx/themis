@@ -343,6 +343,9 @@ def _parse_tabular(doc: Doc, ctx: Ctx, env: str, t: tuple[int, int, int, int]) -
         cells=[],
     )
     rows = _split_rows(doc, ctx, pt, i, t[2])
+    if env == "longtable" and _enabled("C14"):
+        rows = _drop_longtable_repeats(doc, rows, i, t[2])
+        pt.caption, pt.label = _caption_label(doc, t[1], t[2])
     _place(doc, pt, rows)
     _h("C17")(pt)
     for cell in pt.cells:
@@ -437,6 +440,25 @@ def _split_rows(doc: Doc, ctx: Ctx, pt: ParsedTable, start: int, end: int):
             continue  # rules / commands only: not a row
         out.append((color, raw_cells))
     return out
+
+
+@handler("C14")
+def _environments(ctx: Ctx) -> None:
+    """Tabular variants and floats beyond plain tabular/table. Wrappers such as \\resizebox,
+    \\scalebox and adjustbox need nothing: tabulars are found wherever they sit in a float,
+    and several tabulars in one float each become a table with the float's caption."""
+    ctx.tabular_envs |= {"tabular*", "tabularx", "tabulary", "longtable"}
+    ctx.float_envs |= {"table*", "sidewaystable", "sidewaystable*", "wraptable"}
+
+
+def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
+    """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
+    pages: drop them (and the repeated foot before \\endlastfoot)."""
+    m = doc.masked
+    fh, h = m.find("\\endfirsthead", start, end), m.find("\\endhead", start, end)
+    if fh < 0 or h < 0:
+        return rows
+    return [r for r in rows if not (fh < r[1][0][0] <= h)]
 
 
 def _unwrap(doc: Doc, cell: Cell, name: str, n_args_before: int, opts: bool) -> int | None:
