@@ -580,6 +580,45 @@ def _missing_marker(cell: Cell) -> None:
             return
 
 
+_PLUSMINUS = chr(0xB1)
+_PM_PREFIX = re.compile(
+    r"(?:\s|\$|\{|\\(?:scriptsize|tiny|footnotesize|small)(?![A-Za-z]))*"
+    rf"(?:\\pm(?![A-Za-z])|{_PLUSMINUS})(?:\s|\$|\{{)*"
+)
+_PM_SUB = re.compile(r"\s*\$?\s*_\s*\{\s*(?:\\pm(?![A-Za-z])\s*)?")
+_PM_PAREN = re.compile(r"\s*\(\s*")
+
+
+@handler("C8")
+def _plus_minus(raw: str, j: int):
+    """A spread written after the value, read as (value, start, end, style, next index):
+    71.2 \\pm 0.3, 70.79(+-)0.42, 71.2\\scriptsize{$\\pm$0.3} -> 'pm'; $71.2_{\\pm 0.3}$ or
+    $93.0_{2.0}$ -> 'subscript'; 71.2 (0.3) -> 'paren'. What it means (std, stderr, CI,
+    IQR) is labelled later from the caption, not guessed here."""
+    for prefix, closer, style in (
+        (_PM_PREFIX, None, "pm"),
+        (_PM_SUB, r"\s*\}", "subscript"),
+        (_PM_PAREN, r"\s*\)", "paren"),
+    ):
+        p = prefix.match(raw, j)  # each prefix requires its marker: +-, _{ or (
+        if not p:
+            continue
+        lit = _FULL_LITERAL.match(raw, p.end())
+        if not lit:
+            continue
+        value = parse_literal(lit.group(0))
+        if value is None:
+            continue
+        end = lit.end()
+        if closer:
+            c = re.compile(closer).match(raw, end)
+            if not c:
+                continue
+            end = c.end()
+        return value, lit.start(), lit.end(), style, end
+    return None
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""

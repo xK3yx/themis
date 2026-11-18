@@ -11,7 +11,7 @@ import pytest
 from tests.extract.golden import CASES, Golden, load_goldens
 from themis.extract import tables as T
 
-IMPLEMENTED = ["C13", "C1", "C2", "C3", "C14", "C17", "C18", "C19", "C20", "C4", "C9", "C10"]
+IMPLEMENTED = ["C13", "C1", "C2", "C3", "C14", "C17", "C18", "C19", "C20", "C4", "C9", "C10", "C8"]
 
 GOLDENS = load_goldens()
 STRUCTURAL = {"C1", "C2", "C3", "C14", "C17", "C18", "C19"}
