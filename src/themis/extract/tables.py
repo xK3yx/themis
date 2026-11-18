@@ -466,6 +466,42 @@ def _pad_short_rows(pt: ParsedTable) -> None:
         pt.cells = sorted(pt.cells + added, key=lambda x: (x.row, x.col))
 
 
+def _resolve_input(ctx: Ctx, from_path: str, name: str) -> str | None:
+    """Find an \\input target among the source files (relative to the root or the file)."""
+    name = name.strip()
+    base = from_path.rsplit("/", 1)[0] + "/" if "/" in from_path else ""
+    for cand in (name, name + ".tex", base + name, base + name + ".tex"):
+        cand = cand.lstrip("./") if cand.startswith("./") else cand
+        if cand in ctx.files:
+            return cand
+    return None
+
+
+@handler("C18")
+def _input_tables(doc: Doc, ctx: Ctx, f, caption, label) -> list[ParsedTable] | None:
+    """A float whose tabular comes from \\input{file} / \\include{file}: parse the tabular in
+    that file (spans refer to its bytes); table span, caption and label come from the float."""
+    m = doc.masked
+    out: list[ParsedTable] = []
+    for mt in re.finditer(r"\\(?:input|include)\s*\{([^}]*)\}", m[f[1] : f[2]]):
+        target = _resolve_input(ctx, doc.path, mt.group(1))
+        if target is None:
+            continue
+        idoc = Doc(ctx.files[target], target)
+        tabs = sorted(
+            ((env, t) for env in ctx.tabular_envs for t in _find_env(idoc.masked, env)),
+            key=lambda x: x[1][0],
+        )
+        for env, t in tabs:
+            pt = _parse_tabular(idoc, ctx, env, t)
+            pt.source_path = doc.path
+            pt.table_span = doc.span(f[0], f[3])
+            pt.caption, pt.label = caption, label
+            out.append(pt)
+        ctx.consumed_inputs.add(target)
+    return out or None
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
