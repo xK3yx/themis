@@ -297,16 +297,22 @@ Every HTTP GET (search pages, e-prints) goes through one fetcher that caches by
 `sha256(canonical {"method","url","params"})` into a new append-only `http_fetches` ledger
 table (`key, url, status, response_blob, fetched_at`). Re-running a search replays it
 from the ledger without network, and each paper's metadata traces to the exact response.
-Secrets are excluded from the key and the stored URL: the `mailto` value is replaced by
-`<OPENALEX_MAILTO>` before hashing and storing.
+Secrets are sent on the wire but left out of the cache key, the stored URL and the stored
+body entirely (not replaced by a placeholder): whether `mailto` was set doesn't change
+the response, so the cache is the same either way and the address never reaches the
+ledger. If a service echoes a secret, it is replaced by `<ENV_NAME>` before storing.
+200, 404 and 410 are cached; 429, 5xx and timeouts back off and retry; other errors raise
+without caching. Redirects are followed only to allowlisted https hosts.
 
 ### 4.2 Paper records and dedupe
 - `paper_records` (append-only): one row per (paper, source API response), with
   `source_api`, `fetch_key → http_fetches`, extracted ids (arXiv id without version, DOI
   lowercased, OpenAlex id), title, first author, year.
 - **Canonical paper key**, by first available: `arxiv:<id>` → `doi:<doi>` → `openalex:<id>`.
-  Records sharing any strong identifier are the same paper. `paper_links(a, b, reason)`
-  records each merge and its reason.
+  Records sharing any strong identifier are the same paper, **except** that a merge which
+  would put two different arXiv ids in one paper is refused and recorded as
+  `possible_duplicate` (one wrong DOI must not mix two papers' evidence).
+  `paper_links(a, b, kind, reason)` records each merge and each flag with its reason.
 - Title-only matches (NFKC + casefold + strip non-alphanumerics, same first author, year
   ±1) are **not** auto-merged. They're recorded as `possible_duplicate` links for review.
 
@@ -317,8 +323,10 @@ Secrets are excluded from the key and the stored URL: the `mailto` value is repl
 - The raw e-print bytes are stored as a blob. They may be a gzipped tar, a single gzipped
   `.tex`, or a PDF (→ `no_latex_source`, skipped).
 - **Unpacking is in-memory only** (`tarfile` / `gzip` streams; nothing is extracted to
-  disk). Rules: reject absolute paths, `..` components, symlinks, hardlinks and device
-  files; cap the member count and total uncompressed size (config). Only `.tex`, `.bbl`,
+  disk). Absolute paths, drive letters, backslashes or `..` components reject the
+  **whole archive** (a hostile signal). Symlinks, hardlinks and device files are
+  **skipped** with a recorded reason (they occur in ordinary tarballs). Decompressed size,
+  member count, total member size and per-file size are capped by `[ingest]` in config. Only `.tex`, `.bbl`,
   `.sty`, `.cls`, `.bib` members are kept. Each kept file becomes its own blob and its own
   M0 `sources` row, with origin `{"arxiv", "version", "path", "archive": <blob>}`. Files are
   **not flattened**: a table in `tables/main.tex` is cited by byte offsets in *that* file.
