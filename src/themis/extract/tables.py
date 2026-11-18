@@ -310,7 +310,7 @@ def _caption_label(doc: Doc, start: int, end: int) -> tuple[Span | None, str | N
     mt = re.compile(r"\\caption(?:of\{[^}]*\})?\s*(\[[^\]]*\])?\s*\{").search(m, start, end)
     if mt:
         g_end = _group(m, mt.end() - 1)
-        caption = doc.span(mt.end(), g_end - 1)
+        caption = doc.span(*_trim(m, mt.end(), g_end - 1))  # trimmed, like cells
     label = None
     ml = re.compile(r"\\label\s*\{([^}]*)\}").search(m, start, end)
     if ml:
@@ -742,6 +742,21 @@ def _footnote_marks(cell: Cell) -> None:
             names.append(name)
     if names:
         cell.style["marks"] = names
+
+
+_MACRO_USE = re.compile(r"\\([A-Za-z]+)(?![A-Za-z])")
+
+
+@handler("C15")
+def _expand_macros(s: str, macros: dict[str, str]) -> str:
+    """Expand the paper's zero-argument macros (from its preamble) in display text only;
+    raw text and spans keep the original bytes. Bounded depth guards self-reference."""
+    for _ in range(5):
+        s2 = _MACRO_USE.sub(lambda m: macros.get(m.group(1), m.group(0)), s)
+        if s2 == s:
+            break
+        s = s2
+    return s
 
 
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
