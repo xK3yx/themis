@@ -488,6 +488,17 @@ def _multirow(doc: Doc, cell: Cell) -> None:
         cell.rowspan = abs(n)
 
 
+@handler("C3")
+def _nested_spans(doc: Doc, cell: Cell) -> None:
+    """\\multirow inside \\multicolumn and vice versa: keep unwrapping until stable."""
+    for _ in range(4):
+        before = (cell._start, cell._end, cell.rowspan, cell.colspan)
+        _h("C1")(doc, cell)
+        _h("C2")(doc, cell)
+        if (cell._start, cell._end, cell.rowspan, cell.colspan) == before:
+            return
+
+
 def _trim(m: str, s: int, e: int) -> tuple[int, int]:
     while s < e and m[s] in " \t\r\n":
         s += 1
