@@ -694,6 +694,19 @@ def _column_styles(pt: ParsedTable) -> None:
             cell.style["italic"] = True
 
 
+_CELL_COLOR = re.compile(r"\\(?:cellcolor|colorbox|textcolor)\s*(?:\[[^\]]*\])?\s*\{([^}]*)\}")
+
+
+@handler("C7")
+def _colour(cell: Cell) -> None:
+    """Cell colour: \\cellcolor / \\textcolor / \\colorbox in the cell, else the row's
+    \\rowcolor (which also colours empty cells)."""
+    m = _CELL_COLOR.search(cell.raw) if cell.raw else None
+    color = m.group(1).strip() if m else cell._row_color
+    if color:
+        cell.style["color"] = color
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
