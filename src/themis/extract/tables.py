@@ -560,6 +560,26 @@ def _number_formats(raw: str, lead: int):
     return _FULL_LITERAL.match(raw, lead)
 
 
+_MISSING = {
+    "dash": {"-", "--", "---", chr(0x2013), chr(0x2014), "\\textendash", "\\textemdash"},
+    "na": {"N/A", "n/a", "NA", "na", chr(0x2717), "\\xmark", "\\ding{55}"},
+    "oom": {"OOM", "oom"},
+}
+
+
+@handler("C10")
+def _missing_marker(cell: Cell) -> None:
+    """Cells that say "no value": dashes, N/A, OOM, crosses (after wrappers like $..$)."""
+    if cell.number is not None or not cell.raw:
+        return
+    core = cell.raw[_lead(cell.raw) :]
+    core = core.rstrip().rstrip("}$").strip()
+    for kind, tokens in _MISSING.items():
+        if core in tokens:
+            cell.missing = kind
+            return
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
