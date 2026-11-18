@@ -12,7 +12,7 @@ from themis.ingest.http import Fetcher
 from themis.ingest.records import PaperMeta, SearchPage, clean_title
 
 API = "https://export.arxiv.org/api/query"
-OAI = "https://export.arxiv.org/oai2"
+OAI = "https://oaipmh.arxiv.org/oai"  # moved from export.arxiv.org/oai2 (which redirects here)
 
 _NS = {
     "a": "http://www.w3.org/2005/Atom",

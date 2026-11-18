@@ -22,7 +22,7 @@ from themis.ledger.db import tx
 from themis.router.client import retry_wait
 
 CACHEABLE = (200, 404, 410)  # definitive answers; everything else is retried or raised
-PACED_HOSTS = ("export.arxiv.org", "arxiv.org")
+PACED_HOSTS = ("export.arxiv.org", "arxiv.org", "oaipmh.arxiv.org")
 MAX_REDIRECTS = 3
 
 

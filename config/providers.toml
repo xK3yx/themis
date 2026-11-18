@@ -24,6 +24,7 @@ allowed_hosts = [           # outbound allowlist; every request is checked again
   "api.jina.ai",
   "router.huggingface.co",
   "export.arxiv.org",
+  "oaipmh.arxiv.org",
   "arxiv.org",
   "api.openalex.org",
 ]

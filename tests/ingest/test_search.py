@@ -121,3 +121,18 @@ def test_search_openalex_through_fetcher(fetcher_for):
     f = fetcher_for(_replay("openalex_search_lora"))
     page = search_openalex(f, "low-rank adaptation", per_page=5)
     assert len(page.entries) == 5 and page.fetch_key
+
+
+def test_oai_uses_the_current_endpoint_directly(fetcher_for):
+    """arXiv moved OAI-PMH to oaipmh.arxiv.org; the old URL only redirects there."""
+    from themis.ingest.arxiv import OAI, fetch_oai
+
+    seen = []
+
+    def handler(request):
+        seen.append(str(request.url))
+        return httpx.Response(200, content=body("arxiv_oai_2106.09685"))
+
+    rec, _ = fetch_oai(fetcher_for(httpx.MockTransport(handler)), "2106.09685")
+    assert OAI.startswith("https://oaipmh.arxiv.org/") and seen[0].startswith(OAI)
+    assert rec.license
