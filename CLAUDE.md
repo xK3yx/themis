@@ -52,7 +52,7 @@ choose the option that makes Themis's reasoning more traceable.
 ## Stack
 
 - Python 3.11, `uv` for env and deps, `src/` layout, package `themis`
-- SQLite for the ledger; content-addressed blob store at `data/store/<sha256>`
+- SQLite for the ledger; content-addressed blob store at `data/store/<sha256[:2]>/<sha256>`
 - `pydantic` v2 for all schemas, `httpx` for HTTP, `typer` for CLI
 - Experiments: PyTorch + PEFT, run locally (RTX 4060 Laptop, 8GB VRAM) or on Kaggle
 - Tests: `pytest`; lint: `ruff`
@@ -104,7 +104,7 @@ data/           ledger DB and blob store (gitignored)
 
 | | Scope | Done when | Status |
 |---|---|---|---|
-| M0 | Repo setup, ledger schema, validity rules, blob store | Invalid nodes rejected by tests | todo |
+| M0 | Repo setup, ledger schema, validity rules, blob store | Invalid nodes rejected by tests | done |
 | M1 | Router, ingest, LaTeX table parsing, claim extraction | >= 80% field accuracy on 5 hand-labelled papers | todo |
 | M2 | Entity resolution, conflict detection, evidence pooling | Finds known conflicts in LoRA literature | todo |
 | M3 | Experiment harness, replicate 2-3 published results | Measurements within reported ranges | todo |
