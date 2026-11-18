@@ -53,7 +53,8 @@ def main() -> int:
         "content_type": resp.headers.get("content-type"),
         "recorded_at": datetime.now(UTC).isoformat(timespec="seconds"),
     }
-    (OUT / f"{name}.meta.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+    # Bytes, not text: Windows text mode would write CRLF into a byte-exact fixture.
+    (OUT / f"{name}.meta.json").write_bytes((json.dumps(meta, indent=2) + "\n").encode())
     print(f"recorded {name}: HTTP {resp.status_code}, {len(resp.content)} bytes")
     return 0
 
