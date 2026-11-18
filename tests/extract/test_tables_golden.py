@@ -31,6 +31,7 @@ IMPLEMENTED = [
     "C11",
     "C12",
     "C15",
+    "C16",
 ]
 
 GOLDENS = load_goldens()
@@ -139,7 +140,7 @@ def compare(g: Golden, aspects: set[str]) -> list[str]:
                 out.append(f"{cw}: pad/missing {(q.pad, q.missing)!r} != {(c.pad, c.missing)!r}")
             if "C10" in aspects and q.missing != c.missing:
                 out.append(f"{cw}: missing {q.missing!r} != {c.missing!r}")
-            if "C9" in aspects:
+            if aspects & {"C9", "C16"}:  # C16: numbers inside unknown whole-cell macros
                 en = c.number
                 qn = q.number
                 ev = (en["value"], en.get("literal_span")) if en else None
@@ -217,3 +218,9 @@ def test_handlers_registered_for_implemented_cases():
 
 def test_parser_version():
     assert T.PARSER_VERSION
+
+
+def test_all_twenty_cases_implemented():
+    """The case-by-case build is complete: no golden test may be skipped for a missing case."""
+    assert sorted(IMPLEMENTED, key=lambda c: int(c[1:])) == CASES
+    assert set(T.HANDLERS) == set(CASES) - {"C13", "C20"}  # core and no-behaviour cases

@@ -759,6 +759,24 @@ def _expand_macros(s: str, macros: dict[str, str]) -> str:
     return s
 
 
+_UNKNOWN_WRAPPER = re.compile(r"\\([A-Za-z]+)\s*\{")
+_CLOSERS = re.compile(r"(?:\s|\}|\$)*")
+
+
+@handler("C16")
+def _unknown_wrapper(raw: str, lead: int) -> int | None:
+    """A macro the parser doesn't know, wrapping the WHOLE cell (e.g. a paper's \\revision{963}
+    highlight): look inside it for the number. Anything else (\\cite{..} after a name, etc.)
+    is left as-is; the display text keeps it."""
+    m = _UNKNOWN_WRAPPER.match(raw, lead)
+    if not m:
+        return None
+    end = _group(raw, m.end() - 1)
+    if _CLOSERS.match(raw, end).end() != len(raw):
+        return None  # not a whole-cell wrapper
+    return _LEAD.match(raw, m.end()).end()
+
+
 def _drop_longtable_repeats(doc: Doc, rows, start: int, end: int):
     """In a longtable, rows between \\endfirsthead and \\endhead repeat the header on later
     pages: drop them (and the repeated foot before \\endlastfoot)."""
